@@ -70,4 +70,19 @@ public class Board{//add the tap listener later in android studio
         }
     }
 
+    public BoardCell getCell(int x,int y){
+        return this.board[x][y];
+    }
+
+    public BoardCell getCell(Piece p){
+        for(int i=0;i<this.board.length;i++){
+            for(int j=0;j<this.board.length;j++){
+                if(this.board[i][j].getPiece()==p){
+                    return this.board[i][j];
+                }
+            }
+        }
+        return null;
+    }
+
 }

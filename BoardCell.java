@@ -21,10 +21,15 @@ public class BoardCell {
         this.p=null;//so that later we can check if has piece
     }
 
-    public void setPieces(Piece p) {
+    public void setPiece(Piece p) {
         this.p = p;
     }
     public int[] getPosition() {
         return new int[]{this.col*size, this.row*size};//returns {x,y}
     }
+
+    public Piece getPiece(){
+        return this.p;
+    }
+
 }
