@@ -18,7 +18,7 @@ public class Player {
                 board.getCell(x, y).setPiece(p);
             }
         }
-    }
+    }//will add the listener in the gameview in android studio which willl be a thread.
     //create inner class for connection handling------------------------------
-    
+
 }

@@ -1,3 +1,5 @@
+import java.util.List;
+
 //---------------imports-------------------
 
 
@@ -84,5 +86,82 @@ public class Board{//add the tap listener later in android studio
         }
         return null;
     }
+    //add if clicked somewhere after piece is selected to get the row and col and check if is valid move
+    public void pieceSelected(int row,int col){
+        this.board[row][col].getPiece().isSelected=true;
+        List<int[]> moves=calcMoves(this.board[row][col].getPiece());//then draw all the moves
+        this.board[row][col].getPiece().setMoves(moves);
+
+    }
+
+    public List<int[]> calcMoves(Piece p){
+        List<int[]> mvs=p.getMoves();
+        validate(mvs,p);
+        return mvs;
+    }
+
+    public void validate(List<int[]> mvs,Piece p){
+        //check if moves are possible for pawn
+        if(p instanceof Pawn){
+            if(((Pawn)p).isFirstMove){
+                //check if nothing blocking
+                try {
+                    if(board[p.getRow()-2][p.getCol()]!=null){//case: if ther is a piece 2 infrong of the piece
+                        mvs.remove(new int[] {p.getRow()-2,p.getCol()});
+                    }
+                } catch (Exception e) {
+                    mvs.remove(new int[] {p.getRow()-2,p.getCol()});
+                }
+                validatePawnMoves(mvs, p);
+                
+            }else{//if is is not the first move
+                validatePawnMoves(mvs, p);
+            }
+            
+        }
+        //check possible moves for rook
+        if(p instanceof Rook){
+            
+        }
+
+        //at the end always check if piece is not pinned using the king
+    }
+
+    //move validations
+
+    public void validatePawnMoves(List<int[]> mvs,Piece p){
+        try{
+            if(board[p.getRow()-1][p.getCol()]!=null){//case: if there is a piece directly infront
+                mvs.remove(new int[] {p.getRow()-2,p.getCol()});//removes the double first move
+                mvs.remove(new int[] {p.getRow()-1,p.getCol()});//removes the 1 move
+            }
+        }catch(Exception e){
+                //if outOfBounds then we remove the move
+                mvs.remove(new int[] {p.getRow()-2,p.getCol()});//removes the double first move
+                mvs.remove(new int[] {p.getRow()-1,p.getCol()});//removes the 1 move
+        }
+            //removes the taking moves if not possible
+        try{
+            if(board[p.getRow()-1][p.getCol()+1]==null){//case: if there isnt a piece on the right to eat
+                mvs.remove(new int[] {p.getRow()-1,p.getCol()+1});
+            }
+        }catch(Exception e){
+                //if outOfBounds then we remove the move
+                mvs.remove(new int[] {p.getRow()-1,p.getCol()+1});
+        }
+        try{
+            if(board[p.getRow()-1][p.getCol()-1]==null){//case: if there isnt a piece on the left to eat
+                mvs.remove(new int[] {p.getRow()-1,p.getCol()-1});
+            }
+        }catch(Exception e){
+                //if outOfBounds then we remove the move
+                mvs.remove(new int[] {p.getRow()-1,p.getCol()-1});
+        }
+    }
+
+    public void validateRookMoves(List<int[]> mvs,Piece p) {
+
+    }
+    
 
 }

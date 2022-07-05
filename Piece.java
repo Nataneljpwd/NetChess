@@ -8,7 +8,7 @@ public abstract class Piece{
     protected int col;
     protected int row;
     protected boolean isWhite;
-    protected List<Integer[]> moves;
+    protected List<int []> possibleMoves;
     public boolean isSelected;//if piece is tapped we set it to true and calc moves and display validated moves
     //if 1 piece is selected change all other are to not selected
 
@@ -23,6 +23,8 @@ public abstract class Piece{
         this.col = col;
         this.isWhite = isWhite;
         this.isSelected=false;
+        this.size=160;
+        this.possibleMoves=new ArrayList<int[]>();
     }
     //returns position of the piece assuming 0,0 is the start of the board
     public int[] getPos(){
@@ -41,15 +43,16 @@ public abstract class Piece{
         return this.isWhite;
     }
 
-    public List<Integer[]> getMoves() {
+    public List<int[]> getMoves() {
         calculateMoves();
-        validateMove();
-        return this.moves;
+        return this.possibleMoves;
+    }
+
+    public void setMoves(List<int[]> possibleMoves){
+        this.possibleMoves= possibleMoves;
     }
 
     public void calculateMoves(){}
-
-    public void validateMove(){}
 
     public void draw(){}
 
