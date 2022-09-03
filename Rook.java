@@ -96,27 +96,6 @@ public class Rook extends Piece{
         validateMoves(b);
     }
 
-    public void validateMoves(Board b){
-        //checking for pinned pieces
-        List<int[]> moves=this.possibleMoves;
-        List<int[]> remove=new ArrayList();
-        int[] currPos;
-        //check what moves to remove:
-        for(int[] mov:moves){
-            //move the piece without drawing
-            currPos=this.getRawPos();
-            this.move(mov[0],mov[1]);
-            if(b.isCheck(this.isWhite)){
-                remove.add(mov);
-            }
-            //move the piece back
-            this.move(currPos[0],currPos[1]);
-        }
-        //remove the invalid moves
-        for(int[] mov:remove){
-            moves.remove(mov);
-        }
-        this.setMoves(moves);
-    }
+    
     
 }

@@ -6,7 +6,7 @@ import java.util.*;
 
 
 public class Player {
-    private Board board;//think about how move mechanism will work 
+    private Board board;//think about how move mechanism will work (almost done)
     public boolean isWhite;
     public boolean ourTurn;
     private List<Piece> pieces;
