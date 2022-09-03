@@ -7,8 +7,12 @@ import java.util.*;
 public class Board{//add the tap listener later in android studio
     //variables 
     private BoardCell[][] board;
+    private King wk;
+    private King bk;
+    
 
-    public Board(){
+    public Board(boolean isWhite){
+        
         board=new BoardCell[8][8];
         for(int i=0;i<board.length;i++){
             for(int j=0;j<board.length;j++){
@@ -19,7 +23,7 @@ public class Board{//add the tap listener later in android studio
                 }
                 else{
                     board[i][j].isWhite=false;
-                }//if(p.isWhite()){
+                }if(isWhite){
                     if(i==0){//add black backrank pieces
                         if(j==0 || j==7){
                             //ad a black rook
@@ -38,7 +42,7 @@ public class Board{//add the tap listener later in android studio
                         }
 
                         if(j==4){
-                            //add a black king
+                            bk=new King(i, j, false);
                         }
                     }
                     if(i==1){
@@ -64,11 +68,11 @@ public class Board{//add the tap listener later in android studio
                             //add a white qween
                         }
                         if(j==4){
-                            //add a white king
+                            wk=new King(i, j, true);
                         }
                     }
-                    
-            }//}else{}//add rendering and board building for black player
+                }
+            }//add rendering and board building for black player
         }
     }
 
@@ -101,10 +105,16 @@ public class Board{//add the tap listener later in android studio
 
     
 
-    public boolean isCheck(boolean isWHite){
+    public boolean isCheck(boolean isWhite){
         //TODO: implement this method.
-        return true;
+        if(isWhite){
+            return wk.isCheck(this);
+        }else{
+            return bk.isCheck(this);
+        }
     }
+
+    public void draw(){}
     
 
 }

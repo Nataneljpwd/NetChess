@@ -16,8 +16,7 @@ public class Bishop extends Piece{
         List<int[]> tLeft= new ArrayList<>()
         ,tRight=new ArrayList<>(),
         bLeft=new ArrayList<>(),
-        bRight=new ArrayList<>(),
-        remove=new ArrayList<>();
+        bRight=new ArrayList<>();
         
         //start with top left moves:
         for(int i=row-1,j=col-1;i>=0 && j>=0;i--,j--){//the -1 is so that the curr pos wont be a move.
