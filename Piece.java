@@ -28,7 +28,11 @@ public abstract class Piece{
     }
     //returns position of the piece assuming 0,0 is the start of the board
     public int[] getPos(){
-        return new int[] {col*size,row*size};//returns {x,y}
+        return new int[] {row*size,col*size};//returns {x,y}
+    }
+
+    public int[] getRawPos(){
+        return new int[]{row,col};
     }
 
     public int getCol() {
@@ -43,8 +47,8 @@ public abstract class Piece{
         return this.isWhite;
     }
 
-    public List<int[]> getMoves() {
-        calculateMoves();
+    public List<int[]> getMoves(Board b) {
+        calculateMoves(b);
         return this.possibleMoves;
     }
 
@@ -52,7 +56,7 @@ public abstract class Piece{
         this.possibleMoves= possibleMoves;
     }
 
-    public void calculateMoves(){}
+    public void calculateMoves(Board b){}
 
     public void draw(){}
 
