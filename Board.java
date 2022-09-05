@@ -72,7 +72,7 @@ public class Board{//add the tap listener later in android studio
                         }
                     }
                 }
-            }//add rendering and board building for black player
+            }//add rendering and board building for black player ----possible to do without duping code----
         }
     }
 
@@ -98,15 +98,8 @@ public class Board{//add the tap listener later in android studio
         this.board[row][col].getPiece().setMoves(moves);
 
     }*/
-    
 
-    
-    //move validations
-
-    
-
-    public boolean isCheck(boolean isWhite){
-        //TODO: implement this method.
+    public boolean isCheck(boolean isWhite){//check if it is check, here we input the color of the player
         if(isWhite){
             return wk.isCheck(this);
         }else{
@@ -114,7 +107,18 @@ public class Board{//add the tap listener later in android studio
         }
     }
 
+    public int[] whereCheck(boolean isWhite){
+        if(isWhite){
+            return wk.whereCheck(this);
+        }else{
+            return bk.whereCheck(this);
+        }
+    }
+    //TODO: implement.(in android studio)
     public void draw(){}
+
+    //TODO:implement dfs function for each Square to check if it is mate
+    //Implement isMate func too.
     
 
 }
