@@ -27,64 +27,63 @@ public class Rook extends Piece{
         lst.add(up);
         lst.add(down);
 
-        //adds all vertical moves
-        //first the up moves:
-        for(int i=this.row-1;i>=0;i--){
-            if(b.getCell(i, this.col).getPiece()==null){
-                this.up.add(new int[] {i,this.col});
-            }else {
-                if(b.getCell(i, this.col).getPiece().isWhite==super.isWhite){
-                    //if the same color then we stop because we cand continue
-                    break;
+        int[][] dir={{1,0},{0,1},{-1,0},{0,-1}};
+        //down right up left
+
+        for(int i=0;i<dir.length;i++){
+            for(int r=this.row,c=this.col;r<8 && c<8 && c>=0 && r>=0;r+=dir[i][0],c+=dir[i][1]){
+                if(r==this.row && c==this.col){
+                    r+=dir[i][0];
+                    c+=dir[i][1];
+                }
+                if(i==0){
+                    if(b.getCell(r,c).getPiece()==null){
+                        down.add(new int[]{r,c});
+                    }else{
+                        if(b.getCell(r,c).getPiece().isWhite==this.isWhite){
+                            break;
+                        }else{
+                            down.add(new int[] {r,c});
+                            break;
+                        }
+                    }
+                }else if(i==1){
+                    if(b.getCell(r,c).getPiece()==null){
+                        right.add(new int[]{r,c});
+                    }else{
+                        if(b.getCell(r,c).getPiece().isWhite==this.isWhite){
+                            break;
+                        }else{
+                            right.add(new int[] {r,c});
+                            break;
+                        }
+                    }
+                }else if(i==2){
+                    if(b.getCell(r,c).getPiece()==null){
+                        up.add(new int[]{r,c});
+                    }else{
+                        if(b.getCell(r,c).getPiece().isWhite==this.isWhite){
+                            break;
+                        }else{
+                            up.add(new int[] {r,c});
+                            break;
+                        }
+                    }
                 }else{
-                    //if different we add the eating and then we stop
-                    this.up.add(new int[] {i,this.col});
-                    break;
+                    if(b.getCell(r,c).getPiece()==null){
+                        left.add(new int[]{r,c});
+                    }else{
+                        if(b.getCell(r,c).getPiece().isWhite==this.isWhite){
+                            break;
+                        }else{
+                            left.add(new int[] {r,c});
+                            break;
+                        }
+                    }
                 }
             }
         }
 
-        //down moves:
-        for(int i=1+this.row;i<8;i++){
-            if(b.getCell(i, this.col).getPiece()==null){
-                this.down.add(new int[] {i,this.col});
-            }else{
-                //check the same thing for the down as the up:
-                if(b.getCell(i, this.col).getPiece().isWhite==this.isWhite){
-                    break;
-                }else{
-                    this.down.add(new int[] {i,this.col});
-                    break;
-                }
-            }
-        }
-
-        //right moves:
-        for(int i=this.col+1;i<8;i++){
-            if(b.getCell(i, this.col).getPiece()==null){
-                this.right.add(new int[] {this.row,i});
-            }else{
-                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
-                    break;
-                }else{
-                    this.right.add(new int[] {this.row,i});
-                    break;
-                }
-            }
-        }
-        //left moves:
-        for(int i=this.col-1;i>=0;i--){
-            if(b.getCell(this.row,i).getPiece()==null){
-                this.left.add(new int[] {row,i});
-            }else{
-                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
-                    break;
-                }else{
-                    this.left.add(new int[] {this.row,i});
-                    break;
-                }
-            }
-        }
         //add moves to Moves arrayList so that we will be able to validate later.
 
         for(int i=0;i<lst.size();i++){

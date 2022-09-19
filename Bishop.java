@@ -17,60 +17,85 @@ public class Bishop extends Piece{
         ,tRight=new ArrayList<>(),
         bLeft=new ArrayList<>(),
         bRight=new ArrayList<>();
+
+        List<List<int[]>> lst=new ArrayList<>();
+        lst.add(tLeft);
+        lst.add(tRight);
+        lst.add(bLeft);
+        lst.add(bRight);
+
+        int[][] dir={{-1,-1},{-1,1},{1,-1},{-1,-1}};
+        //top left, top right, bottom left, bottom right
+
+        for(int i=0;i<dir.length;i++){
+            for(int r=this.row,c=this.col;r>=0 && c>=0 && r<8 && c<8;r+=dir[i][0], c+=dir[i][1]){
+                //if first time we dont check curr pos,(possible not to add this cond)
+                //Delete if needed
+                if(r==this.row && c==this.col){
+                    r+=dir[i][0];
+                    c+=dir[i][1];
+                }
+                if(i==0){
+                    if(b.getCell(r,c).getPiece()==null){
+                        tLeft.add(new int[]{r,c});
+                    }else{
+                        if(b.getCell(r,c).getPiece().isWhite==this.isWhite){
+                            break;
+                        }else{
+                            tLeft.add(new int[] {r,c});
+                            break;
+                        }
+                    }
+                }
+
+                else if(i==1){
+                    if(b.getCell(r,c).getPiece()==null){
+                        tLeft.add(new int[]{r,c});
+                    }else{
+                        if(b.getCell(r,c).getPiece().isWhite==this.isWhite){
+                            break;
+                        }else{
+                            tLeft.add(new int[] {r,c});
+                            break;
+                        }
+                    }
+                }
+                
+                else if(i==2){
+                    if(b.getCell(r,c).getPiece()==null){
+                        tLeft.add(new int[]{r,c});
+                    }else{
+                        if(b.getCell(r,c).getPiece().isWhite==this.isWhite){
+                            break;
+                        }else{
+                            tLeft.add(new int[] {r,c});
+                            break;
+                        }
+                    }
+                }
+                
+                else{
+                    if(b.getCell(r,c).getPiece()==null){
+                        tLeft.add(new int[]{r,c});
+                    }else{
+                        if(b.getCell(r,c).getPiece().isWhite==this.isWhite){
+                            break;
+                        }else{
+                            tLeft.add(new int[] {r,c});
+                            break;
+                        }
+                    }
+                }
+            }
+        }
         
-        //start with top left moves:
-        for(int i=row-1,j=col-1;i>=0 && j>=0;i--,j--){//the -1 is so that the curr pos wont be a move.
-            if(b.getCell(i,j).getPiece()==null){
-                tLeft.add(new int[] {i,j});
-            }else{
-                if(b.getCell(i,j).getPiece().isWhite==this.isWhite){
-                    break;
-                }else{
-                    tLeft.add(new int[] {i,j});
-                    break;
-                }
+        for(int i=0;i<lst.size();i++){
+            for(int j=0;j<lst.get(i).size();j++){
+                //adding all the possible moves to the arrayList.
+                super.possibleMoves.add(lst.get(i).get(j));
             }
         }
-        //then top right moves:
-        for(int i=row-1,j=col+1;i>=0 && j<8;i--,j++){
-            if(b.getCell(i,j).getPiece()==null){
-                tRight.add(new int[] {i,j});
-            }else{
-                if(b.getCell(i,j).getPiece().isWhite==this.isWhite){
-                    break;
-                }else{
-                    tRight.add(new int[] {i,j});
-                    break;
-                }
-            }
-        }
-        
-        //Bottom right
-        for(int i=row+1,j=col+1;i<8 && j<8;i++,j++){
-            if(b.getCell(i,j).getPiece()==null){
-                bRight.add(new int[] {i,j});
-            }else{
-                if(b.getCell(i,j).getPiece().isWhite==this.isWhite){
-                    break;
-                }else{
-                    bRight.add(new int[] {i,j});
-                    break;
-                }
-            }
-        }
-        //Bottom left
-        for(int i=row+1,j=col-1;i<8 && j>=0;i++,j--){//the -1 is so that the curr pos wont be a move.
-            if(b.getCell(i,j).getPiece()==null){
-                bLeft.add(new int[] {i,j});
-            }else{
-                if(b.getCell(i,j).getPiece().isWhite==this.isWhite){
-                    break;
-                }else{
-                    bLeft.add(new int[] {i,j});
-                    break;
-                }
-            }
-        }
+
         validateMoves(b);
     }
 

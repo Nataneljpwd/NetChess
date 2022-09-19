@@ -118,6 +118,11 @@ public class Board{//add the tap listener later in android studio
     public void draw(){}
 
     //TODO:implement dfs function for each Square to check if it is mate
+    //canBlock
+    public boolean canBlock(int row,int col){
+        
+        return false;
+    }
     //Implement isMate func too.
     
 

@@ -1,0 +1,115 @@
+Rook------------------------
+move checking:
+//up moves
+for(int i=this.row-1;i>=0;i--){
+            if(b.getCell(i, this.col).getPiece()==null){
+                this.up.add(new int[] {i,this.col});
+            }else {
+                if(b.getCell(i, this.col).getPiece().isWhite==super.isWhite){
+                    //if the same color then we stop because we cand continue
+                    break;
+                }else{
+                    //if different we add the eating and then we stop
+                    this.up.add(new int[] {i,this.col});
+                    break;
+                }
+            }
+        }
+
+        //down moves:
+        for(int i=1+this.row;i<8;i++){
+            if(b.getCell(i, this.col).getPiece()==null){
+                this.down.add(new int[] {i,this.col});
+            }else{
+                //check the same thing for the down as the up:
+                if(b.getCell(i, this.col).getPiece().isWhite==this.isWhite){
+                    break;
+                }else{
+                    this.down.add(new int[] {i,this.col});
+                    break;
+                }
+            }
+        }
+
+        //right moves:
+        for(int i=this.col+1;i<8;i++){
+            if(b.getCell(i, this.col).getPiece()==null){
+                this.right.add(new int[] {this.row,i});
+            }else{
+                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
+                    break;
+                }else{
+                    this.right.add(new int[] {this.row,i});
+                    break;
+                }
+            }
+        }
+        //left moves:
+        for(int i=this.col-1;i>=0;i--){
+            if(b.getCell(this.row,i).getPiece()==null){
+                this.left.add(new int[] {row,i});
+            }else{
+                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
+                    break;
+                }else{
+                    this.left.add(new int[] {this.row,i});
+                    break;
+                }
+            }
+        }
+
+Bishop move ckecking:
+
+ //start with top left moves:
+        for(int i=row-1,j=col-1;i>=0 && j>=0;i--,j--){//the -1 is so that the curr pos wont be a move.
+            if(b.getCell(i,j).getPiece()==null){
+                tLeft.add(new int[] {i,j});
+            }else{
+                if(b.getCell(i,j).getPiece().isWhite==this.isWhite){
+                    break;
+                }else{
+                    tLeft.add(new int[] {i,j});
+                    break;
+                }
+            }
+        }
+        //then top right moves:
+        for(int i=row-1,j=col+1;i>=0 && j<8;i--,j++){
+            if(b.getCell(i,j).getPiece()==null){
+                tRight.add(new int[] {i,j});
+            }else{
+                if(b.getCell(i,j).getPiece().isWhite==this.isWhite){
+                    break;
+                }else{
+                    tRight.add(new int[] {i,j});
+                    break;
+                }
+            }
+        }
+        
+        //Bottom right
+        for(int i=row+1,j=col+1;i<8 && j<8;i++,j++){
+            if(b.getCell(i,j).getPiece()==null){
+                bRight.add(new int[] {i,j});
+            }else{
+                if(b.getCell(i,j).getPiece().isWhite==this.isWhite){
+                    break;
+                }else{
+                    bRight.add(new int[] {i,j});
+                    break;
+                }
+            }
+        }
+        //Bottom left
+        for(int i=row+1,j=col-1;i<8 && j>=0;i++,j--){//the -1 is so that the curr pos wont be a move.
+            if(b.getCell(i,j).getPiece()==null){
+                bLeft.add(new int[] {i,j});
+            }else{
+                if(b.getCell(i,j).getPiece().isWhite==this.isWhite){
+                    break;
+                }else{
+                    bLeft.add(new int[] {i,j});
+                    break;
+                }
+            }
+        }
