@@ -113,3 +113,105 @@ Bishop move ckecking:
                 }
             }
         }
+
+        King:
+        isCheck:
+        for(int i=row-1;i>=0;i--){
+            if(b.getCell(i,this.col).getPiece()!=null){
+                //if there is a piece check the color,if same as King, break.
+                if(b.getCell(i,this.col).getPiece().isWhite==this.isWhite){
+                    break;
+                }else{
+                    if(b.getCell(i,this.col).getPiece() instanceof Rook || b.getCell(i,this.col).getPiece() instanceof Queen){
+                        return true;
+                    }
+                }
+            }
+        }
+        //check bottom checks
+        for(int i=row+1;i<8;i++){
+            if(b.getCell(i,this.col).getPiece()!=null){
+                //if there is a piece check the color,if same as King, break.
+                if(b.getCell(i,this.col).getPiece().isWhite==this.isWhite){
+                    break;
+                }else{
+                    if(b.getCell(i,this.col).getPiece() instanceof Rook || b.getCell(i,this.col).getPiece() instanceof Queen){
+                        return true;
+                    }
+                }
+            }
+        }
+        //check for left and right:
+        //right:
+        for(int i=col+1;i<8;i++){
+            if(b.getCell(this.row,i).getPiece()!=null){
+                //if there is a piece check the color,if same as King, break.
+                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
+                    break;
+                }else{
+                    if(b.getCell(this.row,i).getPiece() instanceof Rook || b.getCell(i,this.col).getPiece() instanceof Queen){
+                        return true;
+                    }
+                }
+            }
+        }
+        //left:
+        for(int i=col-1;i>=0;i--){
+            if(b.getCell(this.row,i).getPiece()!=null){
+                //if there is a piece check the color,if same as King, break.
+                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
+                    break;
+                }else{
+                    if(b.getCell(this.row,i).getPiece() instanceof Rook || b.getCell(i,this.col).getPiece() instanceof Queen){
+                        return true;
+                    }
+                }
+            }
+        }
+
+        //check for diagonal checks
+
+        for(int i=row-1,j=col-1;i>=0 && j>=0;i--,j--){//the -1 is so that the curr pos wont be a move.
+            if(b.getCell(i,j).getPiece()!=null){
+                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){//if the pieces are the same color we stop.
+                    break;
+                }
+                if(b.getCell(i,j).getPiece() instanceof Queen || b.getCell(i,j).getPiece() instanceof Bishop){
+                    return true;
+                }
+            }
+        }
+        //then top right moves:
+        for(int i=row-1,j=col+1;i>=0 && j<8;i--,j++){
+            if(b.getCell(i,j).getPiece()!=null){
+                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
+                    break;
+                }
+                if(b.getCell(i,j).getPiece() instanceof Queen || b.getCell(i,j).getPiece() instanceof Bishop){
+                    return true;
+                }
+            }
+        }
+        
+        //Bottom right
+        for(int i=row+1,j=col+1;i<8 && j<8;i++,j++){
+            if(b.getCell(i,j).getPiece()!=null){
+                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
+                    break;
+                }
+                if(b.getCell(i,j).getPiece() instanceof Queen || b.getCell(i,j).getPiece() instanceof Bishop){
+                    return true;
+                }
+            }
+        }
+        //Bottom left
+        for(int i=row+1,j=col-1;i<8 && j>=0;i++,j--){//the -1 is so that the curr pos wont be a move.
+            if(b.getCell(i,j).getPiece()!=null){
+                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
+                    break;
+                }
+                if(b.getCell(i,j).getPiece() instanceof Queen || b.getCell(i,j).getPiece() instanceof Bishop){
+                    return true;
+                }   
+            }
+        }

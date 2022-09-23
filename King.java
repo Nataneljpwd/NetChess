@@ -6,111 +6,43 @@ public class King extends Piece {
         super(row, col, isWhite);
     }
 
-    public void calculateMoves(Board b){}
+    public void calculateMoves(Board b){
+        int[][] dir={{-1,-1},{-1,1},{1,-1},{-1,-1},{1,0},{0,1},{-1,0},{0,-1}};
+        for(int[] d:dir){
+            if(this.row+d[0]<8 && this.row+d[0]>=0 && this.col+d[1]<8 && this.col+d[1]>=0){
+                super.possibleMoves.add(new int[] {this.row+d[0], this.col+d[1]});
+            }
+        }
+        validateMoves(b);
+    }
 
     public boolean isCheck(Board b){
         //run BFS to check if its check+ 8 moves for Knight and 2 for pawns.
         //checking for top checks
-        for(int i=row-1;i>=0;i--){
-            if(b.getCell(i,this.col).getPiece()!=null){
-                //if there is a piece check the color,if same as King, break.
-                if(b.getCell(i,this.col).getPiece().isWhite==this.isWhite){
-                    break;
-                }else{
-                    if(b.getCell(i,this.col).getPiece() instanceof Rook || b.getCell(i,this.col).getPiece() instanceof Queen){
-                        return true;
-                    }
-                }
-            }
-        }
-        //check bottom checks
-        for(int i=row+1;i<8;i++){
-            if(b.getCell(i,this.col).getPiece()!=null){
-                //if there is a piece check the color,if same as King, break.
-                if(b.getCell(i,this.col).getPiece().isWhite==this.isWhite){
-                    break;
-                }else{
-                    if(b.getCell(i,this.col).getPiece() instanceof Rook || b.getCell(i,this.col).getPiece() instanceof Queen){
-                        return true;
-                    }
-                }
-            }
-        }
-        //check for left and right:
-        //right:
-        for(int i=col+1;i<8;i++){
-            if(b.getCell(this.row,i).getPiece()!=null){
-                //if there is a piece check the color,if same as King, break.
-                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
-                    break;
-                }else{
-                    if(b.getCell(this.row,i).getPiece() instanceof Rook || b.getCell(i,this.col).getPiece() instanceof Queen){
-                        return true;
-                    }
-                }
-            }
-        }
-        //left:
-        for(int i=col-1;i>=0;i--){
-            if(b.getCell(this.row,i).getPiece()!=null){
-                //if there is a piece check the color,if same as King, break.
-                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
-                    break;
-                }else{
-                    if(b.getCell(this.row,i).getPiece() instanceof Rook || b.getCell(i,this.col).getPiece() instanceof Queen){
-                        return true;
-                    }
-                }
-            }
-        }
 
-        //check for diagonal checks
-
-        for(int i=row-1,j=col-1;i>=0 && j>=0;i--,j--){//the -1 is so that the curr pos wont be a move.
-            if(b.getCell(i,j).getPiece()!=null){
-                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){//if the pieces are the same color we stop.
-                    break;
-                }
-                if(b.getCell(i,j).getPiece() instanceof Queen || b.getCell(i,j).getPiece() instanceof Bishop){
-                    return true;
-                }
-            }
-        }
-        //then top right moves:
-        for(int i=row-1,j=col+1;i>=0 && j<8;i--,j++){
-            if(b.getCell(i,j).getPiece()!=null){
-                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
-                    break;
-                }
-                if(b.getCell(i,j).getPiece() instanceof Queen || b.getCell(i,j).getPiece() instanceof Bishop){
-                    return true;
-                }
-            }
-        }
-        
-        //Bottom right
-        for(int i=row+1,j=col+1;i<8 && j<8;i++,j++){
-            if(b.getCell(i,j).getPiece()!=null){
-                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
-                    break;
-                }
-                if(b.getCell(i,j).getPiece() instanceof Queen || b.getCell(i,j).getPiece() instanceof Bishop){
-                    return true;
+        int[][] dir={{-1,-1},{-1,1},{1,-1},{-1,-1},{1,0},{0,1},{-1,0},{0,-1}};
+        //first diagonal then vertical
+        Piece p;
+        for(int i=0;i<dir.length;i++) {
+            for(int r=this.row,c=this.col;r<8 && r>=0 && c<8 && c>=0;r+=dir[i][0],c+=dir[i][1]){
+                if((p=b.getCell(r,c).getPiece())!=null){
+                    if(p.isWhite!=this.isWhite){//check if not our color
+                        if(i<=3){
+                            if(p instanceof Queen || p instanceof Bishop){
+                                return true;
+                            }
+                        }else{
+                            if(p instanceof Queen || p instanceof Rook){
+                                return true;
+                            }
+                        }
+                    }else{
+                        //we can break cuz it blocks
+                        break;
+                    }
                 }
             }
         }
-        //Bottom left
-        for(int i=row+1,j=col-1;i<8 && j>=0;i++,j--){//the -1 is so that the curr pos wont be a move.
-            if(b.getCell(i,j).getPiece()!=null){
-                if(b.getCell(this.row,i).getPiece().isWhite==this.isWhite){
-                    break;
-                }
-                if(b.getCell(i,j).getPiece() instanceof Queen || b.getCell(i,j).getPiece() instanceof Bishop){
-                    return true;
-                }   
-            }
-        }
-
         //check for knight and pawn checks:
 
         //knight:

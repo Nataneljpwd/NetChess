@@ -59,7 +59,7 @@ public abstract class Piece{
     public void validateMoves(Board b){
         //checking for pinned pieces
         List<int[]> moves=this.possibleMoves;
-        List<int[]> remove=new ArrayList();
+        List<int[]> remove=new ArrayList<>();
         int[] currPos;
         //check what moves to remove:
         for(int[] mov:moves){

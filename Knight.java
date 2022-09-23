@@ -1,6 +1,4 @@
 //imports------
-import java.util.*;
-
 
 public class Knight extends Piece{
     
