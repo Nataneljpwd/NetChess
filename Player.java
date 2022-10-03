@@ -11,14 +11,45 @@ public class Player {
     public boolean ourTurn;
     private List<Piece> pieces;
 
-    public void move(int x,int y){//add a listener that will listen where clicked after a piece was selected to get the x and y
+    public Player(boolean isWhite){
+        this.pieces=new ArrayList<>();
+        this.isWhite = isWhite;
+        this.ourTurn=this.isWhite;
+        this.board=new Board(isWhite,pieces);
+    }
+
+    public boolean checkDraw(){
         for(Piece p : pieces){
-            if(p.isSelected){
-                board.getCell(p).setPiece(null);//moves the piece from pos1 to pos2
-                board.getCell(x, y).setPiece(p);
+            if(p.possibleMoves.size()>0){
+                return false;
             }
         }
-    }//will add the listener in the gameview in android studio which willl be a thread.
+        return true;
+    }
+
+    public void calculateMoves(){
+        for(Piece p : pieces){
+            p.calculateMoves(board);
+        }
+    }
+
+    public void move(int[] curr,int[] to){//add a listener that will listen where clicked after a piece was selected to get the x and y
+        Piece p=board.getCell(curr[0], curr[1]).getPiece();
+        for(int[] mov:p.possibleMoves){
+            if(mov[0]==to[0] && mov[1]==to[1]){
+                //send the move and change ourTurn=!ourTurn.
+                //Handle some of the logic for networking
+                //before our turn we calculate moves for all the pieces
+            }
+        }
+    }
+
+    public boolean isMate(){
+        return true;
+    }
+    
+    //will add the listener in the gameview in android studio which willl be a thread.
     //create inner class for connection handling------------------------------
+    //will calculate moves for all Pieces before every move and check for draw mate and check.
 
 }
