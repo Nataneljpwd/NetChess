@@ -215,3 +215,69 @@ Bishop move ckecking:
                 }   
             }
         }
+
+Board ismate code snippet
+if(fromWhere[2]==0){
+                //down and then up
+                for(int r=wk.row,c=wk.col;r<8;r++){
+                    //just use can block or take and use a dfs func inside it.
+                    if(canBlockOrTake(r,c,isWhite,fromWhere)){
+                        return false;
+                    }
+                }
+                for(int r=wk.row,c=wk.col;r>=0;r--){
+                    if(canBlockOrTake(r,c,isWhite,fromWhere)){
+                        return false;
+                    }
+                }
+            }
+
+            else if(fromWhere[2]==1){
+                //right then left
+                for(int r=wk.row,c=wk.col;c<8;c++){
+                    if(canBlockOrTake(r,c,isWhite,fromWhere)){
+                        return false;
+                    }
+                }
+                for(int r=wk.row,c=wk.col;c>=0;c--){
+                    if(canBlockOrTake(r,c,isWhite,fromWhere)){
+                        return false;
+                    }
+                }
+            }
+
+            else if(fromWhere[2]==2){
+                //bRight then bLeft
+                for(int r=wk.row+1,c=wk.col+1;c<8 && r<8;c++,r++){
+                    if(canBlockOrTake(r,c,isWhite,fromWhere)){
+                        return false;
+                    }
+                }
+                for(int r=wk.row+1,c=wk.col-1;c>=0 && r<8;c--,r++){
+                    if(canBlockOrTake(r,c,isWhite,fromWhere)){
+                        return false;
+                    }
+                }
+                //tRight then tLeft
+                for(int r=wk.row-1,c=wk.col+1;c<8 && r>=0;c++,r--){
+                    if(canBlockOrTake(r,c,isWhite,fromWhere)){
+                        return false;
+                    }
+                }
+                for(int r=wk.row-1,c=wk.col-1;c>=0 && r>=0;c--,r--){
+                    if(canBlockOrTake(r,c,isWhite,fromWhere)){
+                        return false;
+                    }
+                }
+            }
+            else if(fromWhere[2]==3){
+                int[][] moves={{2,1},{2,-1},{-2,1},{-2,-1},{1,2},{-1,2},{1,-2},{-1,-2}};
+                for(int[] mov:moves){
+                    if(canBlockOrTake(wk.row+mov[0], wk.col+mov[1], isWhite,fromWhere)){
+                        return false;
+                    }
+                }
+            }
+        }else{
+            //TODO:implement for black, try to thinl of way without useing else so no repreating.
+        }

@@ -47,6 +47,26 @@ public class Player {
     public boolean isMate(){
         return true;
     }
+
+    //after we recieve the move:
+    public int situationCheck(){
+        //return 0 if nothing, 1 if check 2 if mate 3 if draw.
+        if(board.isCheck(isWhite)){
+            calculateMoves();
+            //here if we get true then its mate because its check and there are no possible moves.
+            if(checkDraw()){
+                return 2;
+            }else{
+                return 1;
+            }
+        }else{
+            //check for draw
+            if(checkDraw()){
+                return 3;
+            }
+        }
+        return 0;
+    }
     
     //will add the listener in the gameview in android studio which willl be a thread.
     //create inner class for connection handling------------------------------

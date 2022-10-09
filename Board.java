@@ -10,7 +10,6 @@ public class Board{//add the tap listener later in android studio
     private BoardCell[][] board;
     private King wk;
     private King bk;
-    
 
     public Board(boolean isWhite,List<Piece> pieces){
         
@@ -134,7 +133,7 @@ public class Board{//add the tap listener later in android studio
                             }
                         }
                     }
-            }//add rendering and board building for black player ----possible to do without duping code----
+            }
         }
     }
 
@@ -162,6 +161,7 @@ public class Board{//add the tap listener later in android studio
     }*/
 
     public boolean isCheck(boolean isWhite){//check if it is check, here we input the color of the player
+        //check kings implementation of ischeck to see the dir
         if(isWhite){
             return wk.isCheck(this);
         }else{
@@ -169,104 +169,10 @@ public class Board{//add the tap listener later in android studio
         }
     }
 
-    public int[] whereCheck(boolean isWhite){
-        if(isWhite){
-            return wk.whereCheck(this);
-        }else{
-            return bk.whereCheck(this);
-        }
-    }//IMPORTANT! talk with teacher and consult , need to implement this method in king or integrate with whereCheck method.
     //TODO: implement.(in android studio)
-    public void draw(){}
+    public void draw(boolean isWhite){}
+    //We can just check if its check and we have no moves!!!! if no moves and its check than its mate!
 
-    //TODO:implement dfs function for each Square to check if it is mate
-    public boolean isMate(boolean isWhite,int[] fromWhere){//gets the color of the player and from where check comes from
-        //check if diagonal check,vertical/horizontal or horse.
-        if(isWhite){
-            int a=dirCheck(new int[] {wk.row,wk.col},fromWhere);
-            if(a==0){
-                //down and then up
-                for(int r=wk.row,c=wk.col;r<8;r++){
-                    if(canBlockOrTake(r,c,isWhite)){
-                        return false;
-                    }
-                }
-                for(int r=wk.row,c=wk.col;r>=0;r--){
-                    if(canBlockOrTake(r,c,isWhite)){
-                        return false;
-                    }
-                }
-            }
-
-            else if(a==1){
-                //right then left
-                for(int r=wk.row,c=wk.col;c<8;c++){
-                    if(canBlockOrTake(r,c,isWhite)){
-                        return false;
-                    }
-                }
-                for(int r=wk.row,c=wk.col;c>=0;c--){
-                    if(canBlockOrTake(r,c,isWhite)){
-                        return false;
-                    }
-                }
-            }
-
-            else if(a==2){
-                //bRight then bLeft
-                for(int r=wk.row+1,c=wk.col+1;c<8 && r<8;c++,r++){
-                    if(canBlockOrTake(r,c,isWhite)){
-                        return false;
-                    }
-                }
-                for(int r=wk.row+1,c=wk.col-1;c>=0 && r<8;c--,r++){
-                    if(canBlockOrTake(r,c,isWhite)){
-                        return false;
-                    }
-                }
-                //tRight then tLeft
-                for(int r=wk.row-1,c=wk.col+1;c<8 && r>=0;c++,r--){
-                    if(canBlockOrTake(r,c,isWhite)){
-                        return false;
-                    }
-                }
-                for(int r=wk.row-1,c=wk.col-1;c>=0 && r>=0;c--,r--){
-                    if(canBlockOrTake(r,c,isWhite)){
-                        return false;
-                    }
-                }
-            }
-            else if(a==3){
-                int[][] moves={{2,1},{2,-1},{-2,1},{-2,-1},{1,2},{-1,2},{1,-2},{-1,-2}};
-                for(int[] mov:moves){
-                    if(canBlockOrTake(wk.row+mov[0], wk.col+mov[1], isWhite)){
-                        return false;
-                    }
-                }
-            }
-        }else{
-            //TODO:implement for black, try to thinl of way without useing else so no repreating.
-        }
-        return true;
-    }
-    //checks if we can block
-    public boolean DFS(int row,int col,boolean isWhite){
-        return false;
-    }
-
-    public int dirCheck(int[] posKing,int[]fromWhere){//checks if check is diagonal horizontal/vertical or horse
-        //return 0 if vertical
-        //return 1 if horizontal
-        //return 2 if diagonal check
-        //return 3 if Horse check
-        return -1;
-    }
-
-    //canBlock-same as DFS so might delete
-    public boolean canBlockOrTake(int row,int col,boolean isWhite){
-        
-        return false;
-    }
     //Implement isMate func too.
     
 

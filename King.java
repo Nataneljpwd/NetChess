@@ -17,9 +17,11 @@ public class King extends Piece {
     }
 
     public boolean isCheck(Board b){
+        //no need for that!!!
         //run BFS to check if its check+ 8 moves for Knight and 2 for pawns.
         //checking for top checks
-
+        //a=0 if vert/horiz , a=1 if diag a=2 if horse, a=3 if pawn
+        //a[0] is row a[1] is col a[2] is kind (diag/horiz/vert/horse/pawn)
         int[][] dir={{-1,-1},{-1,1},{1,-1},{-1,-1},{1,0},{0,1},{-1,0},{0,-1}};
         //first diagonal then vertical
         Piece p;
@@ -60,13 +62,13 @@ public class King extends Piece {
         }
 
         //pawn:
-        if(this.row+1<8 && this.col+1<8 && b.getCell(this.row+1, this.col+1).getPiece()!=null){//checking if there is a pawn infront on the right of the king
-            if(b.getCell(this.row+1, this.col+1).getPiece() instanceof Pawn){
+        if(this.row-1>=0 && this.col+1<8 && b.getCell(this.row-1, this.col+1).getPiece()!=null){//checking if there is a pawn infront on the right of the king
+            if(b.getCell(this.row-1, this.col+1).getPiece() instanceof Pawn){
                 return true;
             }
         }
         if(this.row-1>=0 && this.col-1>=0 && b.getCell(this.row-1, this.col-1).getPiece()!=null){//checking if there is a pawn infront on the left of the king
-            if(b.getCell(this.row+1, this.col+1).getPiece() instanceof Pawn){
+            if(b.getCell(this.row-1, this.col+1).getPiece() instanceof Pawn){
                 return true;
             }
         }
@@ -75,11 +77,4 @@ public class King extends Piece {
         return false;
     }
 
-    public int[] whereCheck(Board b){
-        //TODO:implement this method.
-        //so that later we will be able to see where check comes from so that we will be able to determine is it mate. (using dfs)
-        //consult with Teacher how to do this, do i add the where to the isCheck or create a seperate function
-        //complications: what if the array is empty later?
-        return new int[]{};
-    }
 }
