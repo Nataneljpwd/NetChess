@@ -152,13 +152,6 @@ public class Board{//add the tap listener later in android studio
         return null;
     }
     //add if clicked somewhere after piece is selected to get the row and col and check if is valid move
-    //move the func to the player class.
-    /*public void pieceSelected(int row,int col){
-        this.board[row][col].getPiece().isSelected=true;
-        List<int[]> moves=calcMoves(this.board[row][col].getPiece());//then draw all the moves
-        this.board[row][col].getPiece().setMoves(moves);
-
-    }*/
 
     public boolean isCheck(boolean isWhite){//check if it is check, here we input the color of the player
         //check kings implementation of ischeck to see the dir
