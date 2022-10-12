@@ -7,7 +7,7 @@ public class BoardCell {
     //position of the board cell
     private int col;
     private int row;
-    private int size=100;
+    public static final int size=64;
     private Piece p;
     public boolean isWhite;
 

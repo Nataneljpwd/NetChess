@@ -1,4 +1,3 @@
-import java.nio.BufferOverflowException;
 import java.util.*;
 
 //---------------imports-------------------
@@ -10,9 +9,14 @@ public class Board{//add the tap listener later in android studio
     private BoardCell[][] board;
     private King wk;
     private King bk;
+    List<Piece> pieces;
+    public Piece remove;
+    public boolean isFirstClick;
+    public StringBuilder bldr;
 
     public Board(boolean isWhite,List<Piece> pieces){
         
+        this.pieces = pieces;
         board=new BoardCell[8][8];
         for(int i=0;i<board.length;i++){
             for(int j=0;j<board.length;j++){
@@ -137,6 +141,35 @@ public class Board{//add the tap listener later in android studio
         }
     }
 
+    public String psuedoClickListener(int rawX,int rawY){
+        if(isFirstClick){
+            int row=rawY%BoardCell.size;
+            int col=rawX%BoardCell.size;
+            bldr.append(row+","+col);
+        }else{
+            int row=rawY%BoardCell.size;
+            int col=rawX%BoardCell.size;
+            bldr.append(" "+row+","+col);
+            return bldr.toString();
+        }
+        return "";
+    }
+
+    public void move(int[] from,int[] to,boolean isWhite) {
+        Piece p=this.getCell(to[0], to[1]).getPiece();
+        if(p!=null){
+            if(isWhite && !p.isWhite){
+                remove=p;
+                this.board[to[0]][to[1]].setPiece(this.board[from[0]][from[1]].getPiece());
+                this.board[from[0]][from[1]].setPiece(null);
+            }else{
+                remove=null;
+                this.board[to[0]][to[1]].setPiece(this.board[from[0]][from[1]].getPiece());
+                this.board[from[0]][from[1]].setPiece(null);
+            }
+        }
+    }
+
     public BoardCell getCell(int row,int col){
         return this.board[row][col];
     }
@@ -163,10 +196,5 @@ public class Board{//add the tap listener later in android studio
     }
 
     //TODO: implement.(in android studio)
-    public void draw(boolean isWhite){}
-    //We can just check if its check and we have no moves!!!! if no moves and its check than its mate!
-
-    //Implement isMate func too.
-    
 
 }

@@ -5,7 +5,7 @@ import java.net.Socket;
 import java.util.*;
 
 
-public class Player {
+public class Player implements Runnable{
     private Board board;//think about how move mechanism will work (almost done)
     public boolean isWhite;
     public boolean ourTurn;
@@ -13,6 +13,7 @@ public class Player {
     private ConnectionHandler ch;
     String host="localhost";
     int port = 8888;
+    private boolean isGameOver=false;
 
     public Player(){
         this.pieces=new ArrayList<>();
@@ -27,6 +28,8 @@ public class Player {
     public static void main(String[] args) throws Exception {
         Player p=new Player();
         p.playerSetup(p.getConnectionHandler().getIsWhite());
+        p.ch.run();
+        p.run();
     }
 
     public void playerSetup(boolean isWhite){
@@ -67,12 +70,10 @@ public class Player {
                 //send the move and change ourTurn=!ourTurn.
                 //Handle some of the logic for networking
                 //before our turn we calculate moves for all the pieces
+                ourTurn=!ourTurn;
+                this.ch.move=curr[0]+","+curr[1]+" "+to[0]+","+to[1];
             }
         }
-    }
-
-    public boolean isMate(){
-        return true;
     }
 
     //after we recieve the move:
@@ -93,10 +94,6 @@ public class Player {
             }
         }
         return 0;
-    }
-
-    public void move(){
-        //TODO think of implementation
     }
     
     //will add the listener in the gameview in android studio which willl be a thread.
@@ -131,6 +128,10 @@ public class Player {
         public void setMove(String mv){
             this.move=mv;
         }
+        
+        public void sendDraw() {}
+
+        public void sendOppWon(){}
 
         @Override
         public void run() {
@@ -148,12 +149,16 @@ public class Player {
                 try{
                     if(ourTurn){
                         if(!this.move.equals("")){
+                            //recieve the move we made
                             
+                            writer.println("OPP"+this.move);
                             this.move="";
                             ourTurn=!ourTurn;
                         }
                     }else{
-
+                        msg=reader.readLine();
+                        this.move="OPP "+msg;
+                        //make the move
                         ourTurn=!ourTurn;
                     }
                 }catch(Exception e){
@@ -173,5 +178,57 @@ public class Player {
             }          
         }
 
+    }
+
+    @Override
+    public void run() {
+        // TODO Auto-generated method stub
+        while(!isGameOver){
+            //we recieve move
+            if(!this.ch.move.equals("")){
+                if(this.ch.move.startsWith("OPP") && !ourTurn){
+                    //we make the move for ourselves
+                    String[] conv=this.ch.move.substring(4).split(" ");
+                    int[] from={Integer.parseInt(conv[0].split(",")[0]),Integer.parseInt(conv[0].split(",")[1])};
+                    int[] to={Integer.parseInt(conv[1].split(",")[0]),Integer.parseInt(conv[1].split(",")[1])};
+                    from[0]=7-from[0];
+                    from[1]=7-from[1];
+                    to[0]=7-to[0];
+                    to[1]=7-to[1];
+                    if(this.board.remove!=null){
+                        this.pieces.remove(this.board.remove);
+                        this.board.remove=null;
+                    }
+                    this.board.move(from, to, isWhite);
+                    this.ourTurn=!ourTurn;
+                    int a =this.situationCheck();
+                    if(a==1){
+                        //Makwe a sound or vibration
+                    }else if(a==2){
+                        isGameOver=true;
+                        sendOppWon();
+                    }else if(a==3){
+                        sendDraw();
+                    }
+                }else if(ourTurn){
+                    String[] conv=this.ch.move.split(" ");
+                    int[] from={Integer.parseInt(conv[0].split(",")[0]),Integer.parseInt(conv[0].split(",")[1])};
+                    int[] to={Integer.parseInt(conv[1].split(",")[0]),Integer.parseInt(conv[1].split(",")[1])};
+                    this.board.move(from, to, isWhite);
+                    this.ch.setMove(from[0]+","+from[1]+" "+to[0]+","+to[1]);
+
+                    this.ourTurn=!this.ourTurn;
+                    //here we get the move 
+                }
+            }
+        }
+    }
+
+    private void sendDraw() {
+        this.ch.sendDraw();
+    }
+
+    private void sendOppWon() {
+        this.ch.sendOppWon();
     }
 }
