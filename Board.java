@@ -13,10 +13,10 @@ public class Board{//add the tap listener later in android studio
     public Piece remove;
     public boolean isFirstClick;
     public StringBuilder bldr;
+    private Player p;
 
-    public Board(boolean isWhite,List<Piece> pieces){
-        
-        this.pieces = pieces;
+    public Board(boolean isWhite,Player p){
+        this.p=p;
         board=new BoardCell[8][8];
         for(int i=0;i<board.length;i++){
             for(int j=0;j<board.length;j++){
@@ -78,38 +78,38 @@ public class Board{//add the tap listener later in android studio
                     if(i==6){
                         //add our colored pawn
                         board[i][j].setPiece(new Pawn(i, j, isWhite));
-                        pieces.add(board[i][j].getPiece());
+                        p.pieces.add(board[i][j].getPiece());
                     }
                     if(i==7){
                         if(j==0 || j==7){
                             //ad our colored rook
                             board[i][j].setPiece(new Rook(i, j, isWhite));
-                            pieces.add(board[i][j].getPiece());
+                            p.pieces.add(board[i][j].getPiece());
 
                         }
 
                         if(j==1 || j==6){
                             //add our colored horse
                             board[i][j].setPiece(new Knight(i, j, isWhite));
-                            pieces.add(board[i][j].getPiece());
+                            p.pieces.add(board[i][j].getPiece());
                         }
 
                         if(j==2 || j==5){
                             //add our colored bishop
                             board[i][j].setPiece(new Bishop(i, j, isWhite));
-                            pieces.add(board[i][j].getPiece());
+                            p.pieces.add(board[i][j].getPiece());
                         }
 
                         if(j==3){
                             //add our colored queen
                             board[i][j].setPiece(new Queen(i, j, isWhite));
-                            pieces.add(board[i][j].getPiece());
+                            p.pieces.add(board[i][j].getPiece());
                         }
                         if(isWhite){
                             if(j==3){
                                 //add our colored queen
                                 board[i][j].setPiece(new Queen(i, j, isWhite));
-                                pieces.add(board[i][j].getPiece());
+                                p.pieces.add(board[i][j].getPiece());
                             }
                             if(j==4){
                                 if(!isWhite){
@@ -118,7 +118,7 @@ public class Board{//add the tap listener later in android studio
                                 else{
                                 wk=new King(i, j, isWhite);
                                 }
-                                pieces.add(board[i][j].getPiece());
+                                p.pieces.add(board[i][j].getPiece());
                             } 
                         }else{
                             if(j==3){
@@ -128,12 +128,12 @@ public class Board{//add the tap listener later in android studio
                                 else{
                                 wk=new King(i, j, isWhite);
                                 }
-                                pieces.add(board[i][j].getPiece());
+                                p.pieces.add(board[i][j].getPiece());
                             }
                             if(j==4){
                                 //add a black queen
                                 board[i][j].setPiece(new Queen(i, j, isWhite));
-                                pieces.add(board[i][j].getPiece());
+                                p.pieces.add(board[i][j].getPiece());
                             }
                         }
                     }
@@ -141,33 +141,33 @@ public class Board{//add the tap listener later in android studio
         }
     }
 
-    public String psuedoClickListener(int rawX,int rawY){
+    public void psuedoClickListener(int rawX,int rawY){
         if(isFirstClick){
             int row=rawY%BoardCell.size;
             int col=rawX%BoardCell.size;
+            bldr=new StringBuilder();
             bldr.append(row+","+col);
         }else{
             int row=rawY%BoardCell.size;
             int col=rawX%BoardCell.size;
             bldr.append(" "+row+","+col);
-            return bldr.toString();
+            p.movePlayer = bldr.toString();
         }
-        return "";
     }
 
-    public void move(int[] from,int[] to,boolean isWhite) {
+    public void move(int[] from,int[] to) {
         Piece p=this.getCell(to[0], to[1]).getPiece();
         if(p!=null){
-            if(isWhite && !p.isWhite){
-                remove=p;
-                this.board[to[0]][to[1]].setPiece(this.board[from[0]][from[1]].getPiece());
-                this.board[from[0]][from[1]].setPiece(null);
-            }else{
-                remove=null;
-                this.board[to[0]][to[1]].setPiece(this.board[from[0]][from[1]].getPiece());
-                this.board[from[0]][from[1]].setPiece(null);
-            }
+            //can remove because if the moev swa sent its valid
+            remove=p;
+            this.board[to[0]][to[1]].setPiece(this.board[from[0]][from[1]].getPiece());
+            this.board[from[0]][from[1]].setPiece(null);
+        }else{
+            remove=null;
+            this.board[to[0]][to[1]].setPiece(this.board[from[0]][from[1]].getPiece());
+            this.board[from[0]][from[1]].setPiece(null);
         }
+
     }
 
     public BoardCell getCell(int row,int col){

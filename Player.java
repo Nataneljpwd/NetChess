@@ -5,15 +5,16 @@ import java.net.Socket;
 import java.util.*;
 
 
-public class Player implements Runnable{
+public class Player{
     private Board board;//think about how move mechanism will work (almost done)
     public boolean isWhite;
     public boolean ourTurn;
-    private List<Piece> pieces;
+    public List<Piece> pieces;
     private ConnectionHandler ch;
     String host="localhost";
     int port = 8888;
     private boolean isGameOver=false;
+    public String movePlayer;//in the click listener we set this to the move
 
     public Player(){
         this.pieces=new ArrayList<>();
@@ -29,13 +30,12 @@ public class Player implements Runnable{
         Player p=new Player();
         p.playerSetup(p.getConnectionHandler().getIsWhite());
         p.ch.run();
-        p.run();
     }
 
     public void playerSetup(boolean isWhite){
         this.isWhite=isWhite;
         this.ourTurn=this.isWhite;
-        this.board=new Board(this.isWhite, this.pieces);
+        this.board=new Board(this.isWhite, this);
     }
 
     //add a check for what pieces there are to know if its draw!.
@@ -148,17 +148,39 @@ public class Player implements Runnable{
             while(!this.isGameOver){
                 try{
                     if(ourTurn){
+                        this.move=movePlayer;
                         if(!this.move.equals("")){
-                            //recieve the move we made
-                            
-                            writer.println("OPP"+this.move);
+                            writer.println(this.move);
                             this.move="";
+                            movePlayer="";
                             ourTurn=!ourTurn;
                         }
                     }else{
                         msg=reader.readLine();
-                        this.move="OPP "+msg;
+                        this.move=msg;
                         //make the move
+                        String[] conv=this.move.split(" ");
+                        int[] from={Integer.parseInt(conv[0].split(",")[0]),Integer.parseInt(conv[0].split(",")[1])};
+                        int[] to={Integer.parseInt(conv[1].split(",")[0]),Integer.parseInt(conv[1].split(",")[1])};
+                        from[0]=7-from[0];
+                        from[1]=7-from[1];
+                        to[0]=7-to[0];
+                        to[1]=7-to[1];
+                        if(board.remove!=null){
+                           pieces.remove(board.remove);
+                           board.remove=null;
+                        }
+                        board.move(from, to);
+                        this.ourTurn=!ourTurn;
+                        int a =situationCheck();
+                        if(a==1){
+                            //Makwe a sound or vibration
+                        }else if(a==2){
+                            isGameOver=true;
+                            sendOppWon();
+                        }else if(a==3){
+                            sendDraw();
+                        }
                         ourTurn=!ourTurn;
                     }
                 }catch(Exception e){
@@ -178,57 +200,5 @@ public class Player implements Runnable{
             }          
         }
 
-    }
-
-    @Override
-    public void run() {
-        // TODO Auto-generated method stub
-        while(!isGameOver){
-            //we recieve move
-            if(!this.ch.move.equals("")){
-                if(this.ch.move.startsWith("OPP") && !ourTurn){
-                    //we make the move for ourselves
-                    String[] conv=this.ch.move.substring(4).split(" ");
-                    int[] from={Integer.parseInt(conv[0].split(",")[0]),Integer.parseInt(conv[0].split(",")[1])};
-                    int[] to={Integer.parseInt(conv[1].split(",")[0]),Integer.parseInt(conv[1].split(",")[1])};
-                    from[0]=7-from[0];
-                    from[1]=7-from[1];
-                    to[0]=7-to[0];
-                    to[1]=7-to[1];
-                    if(this.board.remove!=null){
-                        this.pieces.remove(this.board.remove);
-                        this.board.remove=null;
-                    }
-                    this.board.move(from, to, isWhite);
-                    this.ourTurn=!ourTurn;
-                    int a =this.situationCheck();
-                    if(a==1){
-                        //Makwe a sound or vibration
-                    }else if(a==2){
-                        isGameOver=true;
-                        sendOppWon();
-                    }else if(a==3){
-                        sendDraw();
-                    }
-                }else if(ourTurn){
-                    String[] conv=this.ch.move.split(" ");
-                    int[] from={Integer.parseInt(conv[0].split(",")[0]),Integer.parseInt(conv[0].split(",")[1])};
-                    int[] to={Integer.parseInt(conv[1].split(",")[0]),Integer.parseInt(conv[1].split(",")[1])};
-                    this.board.move(from, to, isWhite);
-                    this.ch.setMove(from[0]+","+from[1]+" "+to[0]+","+to[1]);
-
-                    this.ourTurn=!this.ourTurn;
-                    //here we get the move 
-                }
-            }
-        }
-    }
-
-    private void sendDraw() {
-        this.ch.sendDraw();
-    }
-
-    private void sendOppWon() {
-        this.ch.sendOppWon();
     }
 }
