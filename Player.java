@@ -125,9 +125,6 @@ public class Player{
             return isWhite;
         }
 
-        public void setMove(String mv){
-            this.move=mv;
-        }
         
         public void sendDraw() {}
 
@@ -140,7 +137,7 @@ public class Player{
             try {
                 //first we send a message wheter the playee is white of=r black
                 msg=this.reader.readLine();
-                this.isWhite = Integer.parseInt(msg)%2==0;
+                this.isWhite = Boolean.parseBoolean(msg);
                 this.ourTurn=this.isWhite;    
             } catch (Exception e) {
                 // TODO: handle exception
