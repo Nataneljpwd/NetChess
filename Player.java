@@ -1,5 +1,4 @@
 //imports
-import java.net.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.*;
@@ -13,8 +12,6 @@ public class Player{
     private ConnectionHandler ch;
     String host="localhost";
     int port = 8888;
-    private boolean isGameOver=false;
-    public String movePlayer;//in the click listener we set this to the move
 
     public Player(){
         this.pieces=new ArrayList<>();
@@ -28,8 +25,8 @@ public class Player{
 
     public static void main(String[] args) throws Exception {
         Player p=new Player();
-        p.playerSetup(p.getConnectionHandler().getIsWhite());
         p.ch.run();
+        p.playerSetup(p.getConnectionHandler().getIsWhite());
     }
 
     public void playerSetup(boolean isWhite){
@@ -42,16 +39,16 @@ public class Player{
     public boolean checkDraw(){
         int c=0;
         for(Piece p : pieces){
-            if(p instanceof Bishop || p instanceof Knight){c++;}
+            if(p instanceof Bishop || p instanceof Knight || p instanceof King){c++;}
             
             if(p.possibleMoves.size()>0){
                 if(!(p instanceof King )&& !(p instanceof Bishop) && !(p instanceof Knight))c-=100;
                 return false;
             }
         }
-        //c is equal to 1 if we have only a bishop or only a knight
-        if(c==1){
-            // only the bishop or the knight is left
+        //c is 2 if we have only a bishop or only a knight 1 if only a king is left
+        if(c==2 || c==1){
+            // only the bishop or the knight is left or both kings
             return true;
         }
         return true ;
@@ -67,9 +64,6 @@ public class Player{
         Piece p=board.getCell(curr[0], curr[1]).getPiece();
         for(int[] mov:p.possibleMoves){
             if(mov[0]==to[0] && mov[1]==to[1]){
-                //send the move and change ourTurn=!ourTurn.
-                //Handle some of the logic for networking
-                //before our turn we calculate moves for all the pieces
                 ourTurn=!ourTurn;
                 this.ch.move=curr[0]+","+curr[1]+" "+to[0]+","+to[1];
             }
@@ -96,6 +90,15 @@ public class Player{
         return 0;
     }
     
+    public boolean checkForPromotion(){
+        for(int i=0;i<8;i++){
+            if(board.getCell(0, i).getPiece() instanceof Pawn && board.getCell(1, i).getPiece().isWhite==this.isWhite){
+                return true;//handle promotion logic to send to opp.
+            }
+        }
+        return false;
+    }
+
     //will add the listener in the gameview in android studio which willl be a thread.
     //it will call the move function
 
@@ -126,9 +129,21 @@ public class Player{
         }
 
         
-        public void sendDraw() {}
+        public void sendDraw() {
+            try {
+                writer.write("DRAW");
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
 
-        public void sendOppWon(){}
+        public void sendOppWon(){
+            try {
+                writer.println("MATE");
+            } catch (Exception e) {
+                // TODO: handle exception
+            }
+        }
 
         @Override
         public void run() {
@@ -145,15 +160,33 @@ public class Player{
             while(!this.isGameOver){
                 try{
                     if(ourTurn){
-                        this.move=movePlayer;
+                        int a=situationCheck();
+                        if(a==3){
+                            isGameOver=true;
+                            //handle draw
+                        }else if(a==2){
+                            //Mate, we lost
+                            isGameOver=true;
+                        }else if(a==1){
+                            //check , make a vibreation
+                        }
                         if(!this.move.equals("")){
                             writer.println(this.move);
                             this.move="";
-                            movePlayer="";
                             ourTurn=!ourTurn;
                         }
                     }else{
                         msg=reader.readLine();
+                        if(msg.equals("DRAW")){
+                            if(situationCheck()==3){
+                                //its a draw
+                                //handle draw
+                                this.isGameOver=true;
+                            }
+                        }else if(msg.equals("MATE")){
+                            //we won
+                            isGameOver=true;
+                        }
                         this.move=msg;
                         //make the move
                         String[] conv=this.move.split(" ");

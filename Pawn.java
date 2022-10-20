@@ -15,10 +15,6 @@ public class Pawn extends Piece{
     }
     
     //methods:
-
-    //---
-    //---
-    //-p-
     public void calculateMoves(Board b){//should be added to the board class
         if (isFirstMove && b.getCell(row-1,col).getPiece()==null){
             if( b.getCell(row-2,col).getPiece()==null)

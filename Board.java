@@ -12,7 +12,7 @@ public class Board{//add the tap listener later in android studio
     List<Piece> pieces;
     public Piece remove;
     public boolean isFirstClick;
-    public StringBuilder bldr;
+    int[] from;
     private Player p;
 
     public Board(boolean isWhite,Player p){
@@ -145,13 +145,11 @@ public class Board{//add the tap listener later in android studio
         if(isFirstClick){
             int row=rawY%BoardCell.size;
             int col=rawX%BoardCell.size;
-            bldr=new StringBuilder();
-            bldr.append(row+","+col);
+            from=new int[]{row,col};
         }else{
             int row=rawY%BoardCell.size;
             int col=rawX%BoardCell.size;
-            bldr.append(" "+row+","+col);
-            p.movePlayer = bldr.toString();
+            p.move(from, new int[]{row,col});
         }
     }
 
