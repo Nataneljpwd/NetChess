@@ -15,9 +15,10 @@ public class Pawn extends Piece{
     }
     
     //methods:
-    public void calculateMoves(Board b){//should be added to the board class
-        if (isFirstMove && b.getCell(row-1,col).getPiece()==null){
-            if( b.getCell(row-2,col).getPiece()==null)
+    public void calculateMoves(Board b){
+        //change to check the moves better - we dont have a check checker
+        if (row-1>=0 && b.getCell(row-1,col).getPiece()==null){
+            if(isFirstMove && row-2>=0 && b.getCell(row-2,col).getPiece()==null)
                 super.possibleMoves.add(new int[] {row-2,col});
             isFirstMove = false;
             super.possibleMoves.add(new int[] {row-1,col});
@@ -26,11 +27,20 @@ public class Pawn extends Piece{
             super.possibleMoves.add(new int[] {row-1,col+1});
         if(row-1>=0 && col-1>=0 && b.getCell(row-1, col-1).getPiece()!=null)
             super.possibleMoves.add(new int[] {row-1,col-1});
-            
+        
+        validateMoves(b);
     }
 
     public List<int[]> getMoves(Board b) {
         calculateMoves(b);
         return this.possibleMoves;
     }
+
+    @Override
+    public char toChar() {
+        return this.isWhite ? 'P':'p';
+    }
+
+    @Override
+    public void draw() {}
 }

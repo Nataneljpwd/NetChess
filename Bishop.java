@@ -38,4 +38,12 @@ public class Bishop extends Piece{
         validateMoves(b);
     }
 
+    @Override
+    public char toChar() {
+        return this.isWhite ? 'B' : 'b';
+    }
+
+    @Override
+    public void draw() {}
+
 }

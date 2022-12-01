@@ -28,7 +28,7 @@ public abstract class Piece{
     }
     //returns position of the piece assuming 0,0 is the start of the board
     public int[] getPos(){
-        return new int[] {row*size,col*size};//returns {x,y}
+        return new int[] {col*size,row*size};//returns {x,y}
     }
 
     public int[] getRawPos(){
@@ -43,12 +43,12 @@ public abstract class Piece{
         return this.row;
     }
 
-    public boolean isIsWhite() {
+    public boolean isWhite() {
         return this.isWhite;
     }
 
-    public List<int[]> getMoves(Board b) {
-        calculateMoves(b);
+    public List<int[]> getMoves() {
+        //removed the board and the calc moves because thy happen before every move.
         return this.possibleMoves;
     }
 
@@ -65,12 +65,12 @@ public abstract class Piece{
         for(int[] mov:moves){
             //move the piece without drawing
             currPos=this.getRawPos();
-            this.move(mov[0],mov[1]);
+            b.move(currPos, mov);
             if(b.isCheck(this.isWhite)){
                 remove.add(mov);
             }
             //move the piece back
-            this.move(currPos[0],currPos[1]);
+            b.move(mov,currPos);
         }
         //remove the invalid moves
         for(int[] mov:remove){
@@ -79,9 +79,10 @@ public abstract class Piece{
         this.setMoves(moves);
     }
 
-    public void calculateMoves(Board b){}
+    public abstract void calculateMoves(Board b);
 
-    public void draw(){}
+    public abstract void draw();
+    public abstract char toChar();
 
     public void drawValidMoves(){
         //foreach loop of moves, draw circle with low opacity

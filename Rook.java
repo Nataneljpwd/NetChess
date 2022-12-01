@@ -28,8 +28,7 @@ public class Rook extends Piece{
         for(int i=0;i<dir.length;i++){
             for(int r=this.row,c=this.col;r<8 && c<8 && c>=0 && r>=0;r+=dir[i][0],c+=dir[i][1]){
                 if(r==this.row && c==this.col){
-                    r+=dir[i][0];
-                    c+=dir[i][1];
+                    continue;
                 }
                 if(b.getCell(r,c).getPiece()==null){
                     super.possibleMoves.add(new int[]{r, c});
@@ -46,6 +45,14 @@ public class Rook extends Piece{
         }
         validateMoves(b);
     }
+
+    @Override
+    public char toChar() {
+        return this.isWhite ? 'R':'r';
+    }
+
+    @Override
+    public void draw() {}
 
     
     

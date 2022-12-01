@@ -13,10 +13,10 @@ public class Board{//add the tap listener later in android studio
     public Piece remove;
     public boolean isFirstClick;
     int[] from;
-    private Player p;
+    private Player player;
 
     public Board(boolean isWhite,Player p){
-        this.p=p;
+        this.player=p;
         board=new BoardCell[8][8];
         for(int i=0;i<board.length;i++){
             for(int j=0;j<board.length;j++){
@@ -142,30 +142,53 @@ public class Board{//add the tap listener later in android studio
     }
 
     public void psuedoClickListener(int rawX,int rawY){
+        int row=rawY%BoardCell.size;
+        int col=rawX%BoardCell.size;
+        Piece curr=this.getCell(row, col).getPiece();
         if(isFirstClick){
-            int row=rawY%BoardCell.size;
-            int col=rawX%BoardCell.size;
-            from=new int[]{row,col};
+            if(curr!=null && curr.isWhite==player.isWhite){
+                for(int[] mov:curr.getMoves()){
+                    //if the move is ion moves, we do the logic
+                    if(row==mov[0] && col==mov[1]){
+                        from=new int[]{row,col};
+                        isFirstClick=!isFirstClick;
+                    }
+                }
+            }
         }else{
-            int row=rawY%BoardCell.size;
-            int col=rawX%BoardCell.size;
-            p.move(from, new int[]{row,col});
+            row=rawY%BoardCell.size;
+            col=rawX%BoardCell.size;
+            for(int[] mov: curr.getMoves()){
+                if(mov[0]==row && mov[1]==col){
+                    player.move(from, new int[]{row,col});       
+                    isFirstClick=!isFirstClick;
+                    this.move(from , mov);
+                }
+            }
         }
     }
 
     public void move(int[] from,int[] to) {
         Piece p=this.getCell(to[0], to[1]).getPiece();
         if(p!=null){
-            //can remove because if the moev swa sent its valid
-            remove=p;
+            player.remove(p);
+            this.pieces.remove(p);
             this.board[to[0]][to[1]].setPiece(this.board[from[0]][from[1]].getPiece());
             this.board[from[0]][from[1]].setPiece(null);
         }else{
-            remove=null;
             this.board[to[0]][to[1]].setPiece(this.board[from[0]][from[1]].getPiece());
             this.board[from[0]][from[1]].setPiece(null);
         }
 
+    }
+
+    public void printBoard(){
+        for(int i=0;i<this.board.length;i++){
+            for(int j=0;j<this.board[i].length;j++){
+                board[i][j].print();
+            }
+            System.out.println();
+        }
     }
 
     public BoardCell getCell(int row,int col){
@@ -182,7 +205,6 @@ public class Board{//add the tap listener later in android studio
         }
         return null;
     }
-    //add if clicked somewhere after piece is selected to get the row and col and check if is valid move
 
     public boolean isCheck(boolean isWhite){//check if it is check, here we input the color of the player
         //check kings implementation of ischeck to see the dir
@@ -193,6 +215,5 @@ public class Board{//add the tap listener later in android studio
         }
     }
 
-    //TODO: implement.(in android studio)
 
 }

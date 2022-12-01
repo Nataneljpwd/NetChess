@@ -15,9 +15,11 @@ public class Player{
 
     public Player(){
         this.pieces=new ArrayList<>();
-        this.ch=new ConnectionHandler(host,port);
-        this.ch.run();
+        //this.ch=new ConnectionHandler(host,port);
+        //this.ch.run();
     }
+
+    public Board getBoard() {return board;}
 
     public ConnectionHandler getConnectionHandler(){
         return this.ch;
@@ -25,9 +27,12 @@ public class Player{
 
     public static void main(String[] args) throws Exception {
         Player p=new Player();
-        p.ch.run();
-        p.playerSetup(p.getConnectionHandler().getIsWhite());
-    }
+        //p.ch.run();
+        //p.playerSetup(p.getConnectionHandler().getIsWhite());
+        p.playerSetup(true);
+        p.calculateMoves();
+        p.getBoard().printBoard();
+     }
 
     public void playerSetup(boolean isWhite){
         this.isWhite=isWhite;
@@ -92,11 +97,15 @@ public class Player{
     
     public boolean checkForPromotion(){
         for(int i=0;i<8;i++){
-            if(board.getCell(0, i).getPiece() instanceof Pawn && board.getCell(1, i).getPiece().isWhite==this.isWhite){
+            if(board.getCell(0, i).getPiece() instanceof Pawn && board.getCell(0, i).getPiece().isWhite==this.isWhite){
                 return true;//handle promotion logic to send to opp.
             }
         }
         return false;
+    }
+
+    public void remove(Piece p){
+        this.pieces.remove(p);
     }
 
     //will add the listener in the gameview in android studio which willl be a thread.

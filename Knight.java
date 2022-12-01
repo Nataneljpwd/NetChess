@@ -15,4 +15,12 @@ public class Knight extends Piece{
         }
         validateMoves(b);
     }
+
+    @Override
+    public char toChar() {
+        return this.isWhite ? 'N' : 'n';
+    }
+
+    @Override
+    public void draw() {}
 }

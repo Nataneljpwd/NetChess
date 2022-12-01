@@ -77,4 +77,12 @@ public class King extends Piece {
         return false;
     }
 
+    @Override
+    public char toChar() {
+        return this.isWhite ? 'K' : 'k';
+    }
+
+    @Override
+    public void draw() {}
+
 }

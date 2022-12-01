@@ -1,4 +1,5 @@
 public class Queen extends Piece{
+
     public Queen(int row,int col,boolean isWhite){
         super(row, col, isWhite);
     }
@@ -21,4 +22,10 @@ public class Queen extends Piece{
         }
         validateMoves(b);
     }
+    @Override
+    public char toChar() {
+        return this.isWhite ? 'Q' : 'q';
+    }
+    @Override
+    public void draw() {}
 }

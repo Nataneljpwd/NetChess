@@ -31,5 +31,14 @@ public class BoardCell {
     public Piece getPiece(){
         return this.p;
     }
+    public void draw(){}
+    public void print(){
+        if(this.p!=null){
+            System.out.print(p.toChar());
+        }
+        else{
+            System.out.print("-");
+        }
+    }
 
 }
