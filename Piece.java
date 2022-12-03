@@ -65,12 +65,14 @@ public abstract class Piece{
         for(int[] mov:moves){
             //move the piece without drawing
             currPos=this.getRawPos();
+            Piece p=b.getCell(mov[0], mov[1]).getPiece();
             b.move(currPos, mov);
             if(b.isCheck(this.isWhite)){
                 remove.add(mov);
             }
             //move the piece back
             b.move(mov,currPos);
+            b.getCell(mov[0], mov[1]).setPiece(p);
         }
         //remove the invalid moves
         for(int[] mov:remove){

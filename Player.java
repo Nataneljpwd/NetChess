@@ -14,9 +14,9 @@ public class Player{
     int port = 8888;
 
     public Player(){
-        this.pieces=new ArrayList<>();
-        //this.ch=new ConnectionHandler(host,port);
-        //this.ch.run();
+        this.pieces=new ArrayList<Piece>();
+        this.ch=new ConnectionHandler(host,port);
+        this.ch.run();
     }
 
     public Board getBoard() {return board;}
@@ -27,9 +27,8 @@ public class Player{
 
     public static void main(String[] args) throws Exception {
         Player p=new Player();
-        //p.ch.run();
-        //p.playerSetup(p.getConnectionHandler().getIsWhite());
-        p.playerSetup(true);
+        p.ch.run();
+        p.playerSetup(p.getConnectionHandler().getIsWhite());
         p.calculateMoves();
         p.getBoard().printBoard();
      }
@@ -60,7 +59,9 @@ public class Player{
     }
 
     public void calculateMoves(){
-        for(Piece p : pieces){
+        for(int i=0;i<this.pieces.size();i++){
+            Piece p=this.pieces.get(i);
+            if(p != null)
             p.calculateMoves(board);
         }
     }
@@ -128,7 +129,6 @@ public class Player{
                 reader=new BufferedReader(new InputStreamReader(s.getInputStream()));
                 writer=new PrintWriter(s.getOutputStream(),true);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }
@@ -156,7 +156,6 @@ public class Player{
 
         @Override
         public void run() {
-            // TODO Auto-generated method stub
             String msg="";
             try {
                 //first we send a message wheter the playee is white of=r black

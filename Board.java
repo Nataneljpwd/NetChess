@@ -9,7 +9,6 @@ public class Board{//add the tap listener later in android studio
     private BoardCell[][] board;
     private King wk;
     private King bk;
-    List<Piece> pieces;
     public Piece remove;
     public boolean isFirstClick;
     int[] from;
@@ -114,9 +113,11 @@ public class Board{//add the tap listener later in android studio
                             if(j==4){
                                 if(!isWhite){
                                 bk=new King(i, j, isWhite);
+                                board[i][j].setPiece(bk);
                                 }
                                 else{
                                 wk=new King(i, j, isWhite);
+                                board[i][j].setPiece(wk);
                                 }
                                 p.pieces.add(board[i][j].getPiece());
                             } 
@@ -124,14 +125,15 @@ public class Board{//add the tap listener later in android studio
                             if(j==3){
                                 if(!isWhite){
                                 bk=new King(i, j, isWhite);
+                                board[i][j].setPiece(bk);
                                 }
                                 else{
                                 wk=new King(i, j, isWhite);
+                                board[i][j].setPiece(wk);
                                 }
                                 p.pieces.add(board[i][j].getPiece());
                             }
                             if(j==4){
-                                //add a black queen
                                 board[i][j].setPiece(new Queen(i, j, isWhite));
                                 p.pieces.add(board[i][j].getPiece());
                             }
@@ -172,13 +174,14 @@ public class Board{//add the tap listener later in android studio
         Piece p=this.getCell(to[0], to[1]).getPiece();
         if(p!=null){
             player.remove(p);
-            this.pieces.remove(p);
             this.board[to[0]][to[1]].setPiece(this.board[from[0]][from[1]].getPiece());
             this.board[from[0]][from[1]].setPiece(null);
         }else{
             this.board[to[0]][to[1]].setPiece(this.board[from[0]][from[1]].getPiece());
             this.board[from[0]][from[1]].setPiece(null);
         }
+    }
+    public void playerMove(int[] from, int[] to){
 
     }
 

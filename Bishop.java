@@ -20,8 +20,7 @@ public class Bishop extends Piece{
                 //if first time we dont check curr pos,(possible not to add this cond)
                 //Delete if needed
                 if(r==this.row && c==this.col){
-                    r+=dir[i][0];
-                    c+=dir[i][1];
+                    continue;
                 }
                 if(b.getCell(r,c).getPiece()==null){
                     super.possibleMoves.add(new int[] {r,c});
