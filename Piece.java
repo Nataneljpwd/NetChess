@@ -7,7 +7,7 @@ public abstract class Piece{
     //---------------------------position handling--------------------------------
     protected int col;
     protected int row;
-    protected boolean isWhite;
+    protected final boolean isWhite;
     protected List<int []> possibleMoves;
     public boolean isSelected;//if piece is tapped we set it to true and calc moves and display validated moves
     //if 1 piece is selected change all other are to not selected
@@ -23,7 +23,7 @@ public abstract class Piece{
         this.col = col;
         this.isWhite = isWhite;
         this.isSelected=false;
-        this.size=160;
+        this.size=64;
         this.possibleMoves=new ArrayList<int[]>();
     }
     //returns position of the piece assuming 0,0 is the start of the board
@@ -43,7 +43,7 @@ public abstract class Piece{
         return this.row;
     }
 
-    public boolean isWhite() {
+    public boolean getIsWhite() {
         return this.isWhite;
     }
 
@@ -62,8 +62,9 @@ public abstract class Piece{
         List<int[]> remove=new ArrayList<>();
         int[] currPos;
         //check what moves to remove:
-        for(int[] mov:moves){
+        for(int i=0;i<moves.size();i++){
             //move the piece without drawing
+            int[] mov=moves.get(i);
             currPos=this.getRawPos();
             Piece p=b.getCell(mov[0], mov[1]).getPiece();
             b.move(currPos, mov);
@@ -72,12 +73,17 @@ public abstract class Piece{
             }
             //move the piece back
             b.move(mov,currPos);
-            b.getCell(mov[0], mov[1]).setPiece(p);
+            if(p!=null){
+                b.getCell(mov[0], mov[1]).setPiece(p);
+            }
         }
         //remove the invalid moves
-        for(int[] mov:remove){
-            moves.remove(mov);
+        for(int i=0;i<remove.size();i++){
+            if(remove.get(i)!=null){
+                moves.remove(remove.get(i));
+            }
         }
+        
         this.setMoves(moves);
     }
 
@@ -90,7 +96,10 @@ public abstract class Piece{
         //foreach loop of moves, draw circle with low opacity
     }
     //in the board class add a listener to all cells in the board that sends move events
-    public void move(int row,int col){}//add the eating mechanism in the subclasses
+    public void move(int row,int col){
+        this.row=row;
+        this.col=col;
+    }//add the eating mechanism in the subclasses
 
 
 

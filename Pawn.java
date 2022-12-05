@@ -17,14 +17,17 @@ public class Pawn extends Piece{
     //methods:
     public void calculateMoves(Board b){
         //change to check the moves better - we dont have a check checker
-        if (row-1>=0 && b.getCell(row-1,col).getPiece()==null){
-            if(isFirstMove && row-2>=0 && b.getCell(row-2,col).getPiece()==null)
-                super.possibleMoves.add(new int[] {row-2,col});
+        if (this.row-1>=0 && b.getCell(this.row-1,this.col).getPiece()==null){
+            if(isFirstMove && this.row-2>=0 && b.getCell(this.row-2,this.col).getPiece()==null){
+                super.possibleMoves.add(new int[] {this.row-2,this.col});
+            }
             isFirstMove = false;
-            super.possibleMoves.add(new int[] {row-1,col});
+            super.possibleMoves.add(new int[] {this.row-1,this.col});
         }
         if(row-1>=0 && col+1<8 && b.getCell(row-1, col+1).getPiece()!=null)
             super.possibleMoves.add(new int[] {row-1,col+1});
+
+        
         if(row-1>=0 && col-1>=0 && b.getCell(row-1, col-1).getPiece()!=null)
             super.possibleMoves.add(new int[] {row-1,col-1});
         

@@ -14,7 +14,7 @@ public class Board{//add the tap listener later in android studio
     int[] from;
     private Player player;
 
-    public Board(boolean isWhite,Player p){
+    public Board(boolean isWhite,Player p){//fix the function
         this.player=p;
         board=new BoardCell[8][8];
         for(int i=0;i<board.length;i++){
@@ -27,44 +27,48 @@ public class Board{//add the tap listener later in android studio
                 else{
                     board[i][j].isWhite=false;
                 }
-                    if(i==0){//add black backrank pieces
+                    if(i==0){//add backrank pieces
                         if(j==0 || j==7){
                             board[i][j].setPiece(new Rook(i,j,!isWhite));
                         }
 
                         if(j==1 || j==6){
-                            //add a black horse
+                            //add other colored horse
                             board[i][j].setPiece(new Knight(i, j,!isWhite));
                         }
 
                         if(j==2 || j==5){
-                            //add a black bishop
+                            //add other colored bishop
                             board[i][j].setPiece(new Bishop(i, j, !isWhite));
                         }
                         if(isWhite){
                             if(j==3){
-                                //add a black qween
+                                //add other colored queen
                                 board[i][j].setPiece(new Queen(i, j, !isWhite));
                             }
                             if(j==4){
                                 if(!isWhite){
                                 wk=new King(i, j, !isWhite);
+                                board[i][j].setPiece(wk);
                                 }
                                 else{
                                 bk=new King(i, j, !isWhite);
+                                board[i][j].setPiece(bk);
                                 }
                             } 
                         }else{
                             if(j==3){
                                 if(!isWhite){
                                 wk=new King(i, j, !isWhite);
+                                board[i][j].setPiece(wk);
                                 }
                                 else{
                                 bk=new King(i, j, !isWhite);
+                                board[i][j].setPiece(bk);
                                 }
                             }
                             if(j==4){
-                                //add a black qween
+                                //add other colored queen
                                 board[i][j].setPiece(new Queen(i, j, !isWhite));
                             }
                         }
@@ -77,38 +81,37 @@ public class Board{//add the tap listener later in android studio
                     if(i==6){
                         //add our colored pawn
                         board[i][j].setPiece(new Pawn(i, j, isWhite));
-                        p.pieces.add(board[i][j].getPiece());
+                        player.pieces.add(board[i][j].getPiece());
                     }
                     if(i==7){
                         if(j==0 || j==7){
                             //ad our colored rook
                             board[i][j].setPiece(new Rook(i, j, isWhite));
-                            p.pieces.add(board[i][j].getPiece());
-
+                            player.pieces.add(board[i][j].getPiece());
                         }
 
                         if(j==1 || j==6){
                             //add our colored horse
                             board[i][j].setPiece(new Knight(i, j, isWhite));
-                            p.pieces.add(board[i][j].getPiece());
+                            player.pieces.add(board[i][j].getPiece());
                         }
 
                         if(j==2 || j==5){
                             //add our colored bishop
                             board[i][j].setPiece(new Bishop(i, j, isWhite));
-                            p.pieces.add(board[i][j].getPiece());
+                            player.pieces.add(board[i][j].getPiece());
                         }
 
                         if(j==3){
                             //add our colored queen
                             board[i][j].setPiece(new Queen(i, j, isWhite));
-                            p.pieces.add(board[i][j].getPiece());
+                            player.pieces.add(board[i][j].getPiece());
                         }
                         if(isWhite){
                             if(j==3){
                                 //add our colored queen
                                 board[i][j].setPiece(new Queen(i, j, isWhite));
-                                p.pieces.add(board[i][j].getPiece());
+                                player.pieces.add(board[i][j].getPiece());
                             }
                             if(j==4){
                                 if(!isWhite){
@@ -119,7 +122,7 @@ public class Board{//add the tap listener later in android studio
                                 wk=new King(i, j, isWhite);
                                 board[i][j].setPiece(wk);
                                 }
-                                p.pieces.add(board[i][j].getPiece());
+                                player.pieces.add(board[i][j].getPiece());
                             } 
                         }else{
                             if(j==3){
@@ -131,11 +134,11 @@ public class Board{//add the tap listener later in android studio
                                 wk=new King(i, j, isWhite);
                                 board[i][j].setPiece(wk);
                                 }
-                                p.pieces.add(board[i][j].getPiece());
+                                player.pieces.add(board[i][j].getPiece());
                             }
                             if(j==4){
                                 board[i][j].setPiece(new Queen(i, j, isWhite));
-                                p.pieces.add(board[i][j].getPiece());
+                                player.pieces.add(board[i][j].getPiece());
                             }
                         }
                     }
@@ -147,15 +150,11 @@ public class Board{//add the tap listener later in android studio
         int row=rawY%BoardCell.size;
         int col=rawX%BoardCell.size;
         Piece curr=this.getCell(row, col).getPiece();
-        if(isFirstClick){
+         if(isFirstClick){
             if(curr!=null && curr.isWhite==player.isWhite){
-                for(int[] mov:curr.getMoves()){
-                    //if the move is ion moves, we do the logic
-                    if(row==mov[0] && col==mov[1]){
-                        from=new int[]{row,col};
-                        isFirstClick=!isFirstClick;
-                    }
-                }
+                from=curr.getRawPos();
+                isFirstClick=!isFirstClick;
+                curr.drawValidMoves();
             }
         }else{
             row=rawY%BoardCell.size;
@@ -165,12 +164,20 @@ public class Board{//add the tap listener later in android studio
                     player.move(from, new int[]{row,col});       
                     isFirstClick=!isFirstClick;
                     this.move(from , mov);
+                    player.ch.move=from[0]+","+from[1]+" "+mov[0]+","+mov[1];
                 }
             }
+            this.draw();
         }
     }
 
     public void move(int[] from,int[] to) {
+        this.board[to[0]][to[1]].setPiece(this.board[from[0]][from[1]].getPiece());
+        this.board[from[0]][from[1]].getPiece().move(to[0], to[1]);
+        this.board[from[0]][from[1]].setPiece(null);
+    }
+
+    public void playerMove(int[] from,int[] to){
         Piece p=this.getCell(to[0], to[1]).getPiece();
         if(p!=null){
             player.remove(p);
@@ -181,9 +188,8 @@ public class Board{//add the tap listener later in android studio
             this.board[from[0]][from[1]].setPiece(null);
         }
     }
-    public void playerMove(int[] from, int[] to){
 
-    }
+    public void draw(){}
 
     public void printBoard(){
         for(int i=0;i<this.board.length;i++){

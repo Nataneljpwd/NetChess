@@ -7,9 +7,9 @@ public class King extends Piece {
     }
 
     public void calculateMoves(Board b){
-        int[][] dir={{-1,-1},{-1,1},{1,-1},{-1,-1},{1,0},{0,1},{-1,0},{0,-1}};
+        int[][] dir={{-1,-1},{-1,1},{1,-1},{1,1},{1,0},{0,1},{-1,0},{0,-1}};
         for(int[] d:dir){
-            if(this.row+d[0]<8 && this.row+d[0]>=0 && this.col+d[1]<8 && this.col+d[1]>=0){
+            if(this.row+d[0]<8 && this.row+d[0]>=0 && this.col+d[1]<8 && this.col+d[1]>=0 && (b.getCell(this.row+d[0],this.col+d[1]).getPiece()==null || b.getCell(this.row+d[0],this.col+d[1]).getPiece().getIsWhite()!=this.isWhite)){
                 super.possibleMoves.add(new int[] {this.row+d[0], this.col+d[1]});
             }
         }
@@ -54,8 +54,8 @@ public class King extends Piece {
         for(int[] mov:moves){
             if(this.row+mov[0]>=0 && this.row+mov[0]<8 && this.col+mov[1]>=0 && this.col+mov[1]<8){//checking if inside the board
                 if(b.getCell(this.row+mov[0],this.col+mov[1]).getPiece()!=null && //if there is a piece there
-                b.getCell(this.row+mov[0],this.col+mov[1]).getPiece() instanceof Knight//is this piece a Knight
-                ){
+                b.getCell(this.row+mov[0],this.col+mov[1]).getPiece() instanceof Knight &&//is this piece a Knight
+                b.getCell(this.row+mov[0], this.col+mov[1]).getPiece().getIsWhite() != this.isWhite){
                     return true;
                 }
             }
@@ -63,12 +63,12 @@ public class King extends Piece {
 
         //pawn:
         if(this.row-1>=0 && this.col+1<8 && b.getCell(this.row-1, this.col+1).getPiece()!=null){//checking if there is a pawn infront on the right of the king
-            if(b.getCell(this.row-1, this.col+1).getPiece() instanceof Pawn){
+            if(b.getCell(this.row-1, this.col+1).getPiece() instanceof Pawn && b.getCell(this.row-1, this.col+1).getPiece().getIsWhite() != this.isWhite){
                 return true;
             }
         }
         if(this.row-1>=0 && this.col-1>=0 && b.getCell(this.row-1, this.col-1).getPiece()!=null){//checking if there is a pawn infront on the left of the king
-            if(b.getCell(this.row-1, this.col+1).getPiece() instanceof Pawn){
+            if(b.getCell(this.row-1, this.col+1).getPiece() instanceof Pawn && b.getCell(this.row-1, this.col+1).getPiece().getIsWhite() != this.isWhite){
                 return true;
             }
         }

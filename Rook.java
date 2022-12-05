@@ -25,22 +25,18 @@ public class Rook extends Piece{
         int[][] dir={{1,0},{0,1},{-1,0},{0,-1}};
         //down right up left
 
-        for(int i=0;i<dir.length;i++){
-            for(int r=this.row,c=this.col;r<8 && c<8 && c>=0 && r>=0;r+=dir[i][0],c+=dir[i][1]){
-                if(r==this.row && c==this.col){
-                    continue;
-                }
+        for(int[] mov:dir){
+            for(int r=this.row+mov[0],c=this.col+mov[1]; r<8 && c<8 && r>=0 && c>=0; r+=mov[0],c+=mov[1]){
                 if(b.getCell(r,c).getPiece()==null){
-                    super.possibleMoves.add(new int[]{r, c});
+                    this.possibleMoves.add(new int[]{r,c});
                 }else{
-                    if(b.getCell(r,c).getPiece().isWhite==this.isWhite){//if our color
+                    if(b.getCell(r,c).getPiece().getIsWhite() != b.getCell(this.row, this.col).getPiece().getIsWhite()){
+                        this.possibleMoves.add(new int[]{r,c});
                         break;
-                    }else{//if not our color
-                        super.possibleMoves.add(new int[]{r, c});
+                    }else{
                         break;
                     }
                 }
-                    
             }
         }
         validateMoves(b);

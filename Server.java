@@ -13,7 +13,6 @@ public class Server{
     public static PlayerServer p1;
     public static PlayerServer p2;
     private final int MAX_GAMES=10;
-    static boolean ourTurn=true;
     protected ExecutorService tpl =
         Executors.newFixedThreadPool(2*MAX_GAMES);
 
@@ -42,6 +41,7 @@ public class Server{
         public PlayerServer(Socket s,boolean ourTurn){
             this.s=s;
             this.ourTurn=this.isWhite=ourTurn;
+            System.out.println("player connected");
             try {
                 this.writer=new PrintWriter(s.getOutputStream(),true);
                 this.reader=new BufferedReader(new InputStreamReader(s.getInputStream()));
@@ -98,17 +98,20 @@ public class Server{
 
     public static void main(String[] args) throws IOException {
         Server server=new Server();
+        boolean isWhite=Math.random()>=0.5;
         try {
             while(true){
-                p1=new PlayerServer(server.accept(), ourTurn);
-                p2=new PlayerServer(server.accept(), !ourTurn);
+                p1=new PlayerServer(server.accept(), isWhite);
+                p2=new PlayerServer(server.accept(), !isWhite);
                 p1.setOpp(p2);
                 p2.setOpp(p1);
                 server.tpl.execute(p1);
                 server.tpl.execute(p2);
+                isWhite=Math.random()>=0.5;
             }
         } catch (Exception e) {
             // TODO: handle exception
+            e.printStackTrace();
         }finally{
             server.close();
         }

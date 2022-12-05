@@ -9,14 +9,13 @@ public class Player{
     public boolean isWhite;
     public boolean ourTurn;
     public List<Piece> pieces;
-    private ConnectionHandler ch;
+    public ConnectionHandler ch;
     String host="localhost";
     int port = 8888;
 
     public Player(){
         this.pieces=new ArrayList<Piece>();
         this.ch=new ConnectionHandler(host,port);
-        this.ch.run();
     }
 
     public Board getBoard() {return board;}
@@ -27,42 +26,48 @@ public class Player{
 
     public static void main(String[] args) throws Exception {
         Player p=new Player();
-        p.ch.run();
         p.playerSetup(p.getConnectionHandler().getIsWhite());
-        p.calculateMoves();
         p.getBoard().printBoard();
+        System.out.println("\n");
+        p.calculateMoves();
+        new Thread(p.ch).run();
+        System.out.println("\n");
      }
 
-    public void playerSetup(boolean isWhite){
+    public void playerSetup(boolean isWhite) throws InterruptedException{
+        this.board=new Board(isWhite, this);
         this.isWhite=isWhite;
         this.ourTurn=this.isWhite;
-        this.board=new Board(this.isWhite, this);
     }
 
     //add a check for what pieces there are to know if its draw!.
-    public boolean checkDraw(){
-        int c=0;
+    public boolean checkPossibleMoves(){
+        boolean bishop=false,knight=false;
+        if(pieces.size()==1)return true;//only a king left
         for(Piece p : pieces){
-            if(p instanceof Bishop || p instanceof Knight || p instanceof King){c++;}
+            if(p instanceof Bishop || p instanceof Knight || p instanceof King){
+                bishop=p instanceof Bishop;
+                knight=p instanceof Knight;
+            }
             
-            if(p.possibleMoves.size()>0){
-                if(!(p instanceof King )&& !(p instanceof Bishop) && !(p instanceof Knight))c-=100;
+            if(p.possibleMoves.size()>0 && pieces.size()>1){
                 return false;
             }
         }
-        //c is 2 if we have only a bishop or only a knight 1 if only a king is left
-        if(c==2 || c==1){
+        if(bishop^knight){
             // only the bishop or the knight is left or both kings
             return true;
         }
+        
         return true ;
     }
 
     public void calculateMoves(){
         for(int i=0;i<this.pieces.size();i++){
             Piece p=this.pieces.get(i);
-            if(p != null)
-            p.calculateMoves(board);
+            if(p != null){
+                p.calculateMoves(board);
+            }
         }
     }
 
@@ -82,14 +87,14 @@ public class Player{
         if(board.isCheck(isWhite)){
             calculateMoves();
             //here if we get true then its mate because its check and there are no possible moves.
-            if(checkDraw()){
+            if(checkPossibleMoves()){
                 return 2;
             }else{
                 return 1;
             }
         }else{
             //check for draw
-            if(checkDraw()){
+            if(checkPossibleMoves()){
                 return 3;
             }
         }
@@ -113,7 +118,7 @@ public class Player{
     //it will call the move function
 
 
-    private class ConnectionHandler implements Runnable{
+    public class ConnectionHandler implements Runnable{
 
         private Socket s;
         private BufferedReader reader;
@@ -121,15 +126,23 @@ public class Player{
         private boolean ourTurn;
         private boolean isWhite;
         private boolean isGameOver=false;
-        private String move;
+        public String move;
 
         public ConnectionHandler(String host,int port){
             try {
                 s=new Socket(host,port);
-                reader=new BufferedReader(new InputStreamReader(s.getInputStream()));
                 writer=new PrintWriter(s.getOutputStream(),true);
-            } catch (IOException e) {
+                reader=new BufferedReader(new InputStreamReader(s.getInputStream()));
+                String msg="";
+                //first we send a message wheter the playee is white of=r black
+                while(msg==null || msg.equals(""))
+                    msg=this.reader.readLine();
+                
+                this.isWhite = Boolean.parseBoolean(msg);
+                this.ourTurn=this.isWhite;    
+            }catch (IOException e) {
                 e.printStackTrace();
+                System.out.println("Eror");
             }
         }
 
@@ -157,18 +170,11 @@ public class Player{
         @Override
         public void run() {
             String msg="";
-            try {
-                //first we send a message wheter the playee is white of=r black
-                msg=this.reader.readLine();
-                this.isWhite = Boolean.parseBoolean(msg);
-                this.ourTurn=this.isWhite;    
-            } catch (Exception e) {
-                // TODO: handle exception
-            }
-            while(!this.isGameOver){
+            while(true){
                 try{
                     if(ourTurn){
-                        int a=situationCheck();
+                        calculateMoves();
+                        int a=situationCheck();//need to recheck the function
                         if(a==3){
                             isGameOver=true;
                             //handle draw
@@ -178,63 +184,55 @@ public class Player{
                         }else if(a==1){
                             //check , make a vibreation
                         }
-                        if(!this.move.equals("")){
+                        if(this.move!=null && !this.move.equals("")){
                             writer.println(this.move);
                             this.move="";
                             ourTurn=!ourTurn;
                         }
-                    }else{
+                    }
+
+                    else{
                         msg=reader.readLine();
-                        if(msg.equals("DRAW")){
+                        if(msg!=null && msg.equals("DRAW")){
                             if(situationCheck()==3){
                                 //its a draw
                                 //handle draw
                                 this.isGameOver=true;
                             }
-                        }else if(msg.equals("MATE")){
+                        }else if(msg != null && msg.equals("MATE")){
                             //we won
                             isGameOver=true;
                         }
                         this.move=msg;
                         //make the move
-                        String[] conv=this.move.split(" ");
-                        int[] from={Integer.parseInt(conv[0].split(",")[0]),Integer.parseInt(conv[0].split(",")[1])};
-                        int[] to={Integer.parseInt(conv[1].split(",")[0]),Integer.parseInt(conv[1].split(",")[1])};
-                        from[0]=7-from[0];
-                        from[1]=7-from[1];
-                        to[0]=7-to[0];
-                        to[1]=7-to[1];
-                        if(board.remove!=null){
-                           pieces.remove(board.remove);
-                           board.remove=null;
+                        if(this.move != null && !this.move.equals("")){
+                            String[] conv=this.move.split(" ");
+                            int[] from={Integer.parseInt(conv[0].split(",")[0]),Integer.parseInt(conv[0].split(",")[1])};
+                            int[] to={Integer.parseInt(conv[1].split(",")[0]),Integer.parseInt(conv[1].split(",")[1])};
+                            from[0]=7-from[0];
+                            from[1]=7-from[1];
+                            to[0]=7-to[0];
+                            to[1]=7-to[1];
+                            board.move(from, to);
+                            this.ourTurn=!ourTurn;
+                            int a =situationCheck();
+                            if(a==1){
+                                //Makwe a sound or vibration
+                            }else if(a==2){
+                                isGameOver=true;
+                                sendOppWon();
+                            }else if(a==3){
+                                sendDraw();
+                            }
+                            ourTurn=!ourTurn;
                         }
-                        board.move(from, to);
-                        this.ourTurn=!ourTurn;
-                        int a =situationCheck();
-                        if(a==1){
-                            //Makwe a sound or vibration
-                        }else if(a==2){
-                            isGameOver=true;
-                            sendOppWon();
-                        }else if(a==3){
-                            sendDraw();
-                        }
-                        ourTurn=!ourTurn;
                     }
                 }catch(Exception e){
                     //this.isGameOver=true;
                     //TODO handle exception
-                }finally{
-                    try {
-                        this.isGameOver=true;
-                        this.reader.close();
-                        this.writer.close();
-                        this.s.close();
-                    } catch (IOException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }               
+                    e.printStackTrace();
+                    break;
+                }              
             }          
         }
 
