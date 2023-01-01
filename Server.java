@@ -64,14 +64,14 @@ public class Server{
             String msg="";
             while(!isGameOver){
                 try {
-                    if(ourTurn){
+                    if(ourTurn && this.opp!=null){
                         msg=this.reader.readLine();
                         if(!msg.equals("")){
                             this.opp.writer.println(msg);
                             if(msg.startsWith("GAME OVER"))
                                 this.isGameOver=true;
                         }
-                    }else{
+                    }else if(this.opp!=null){
                         msg=this.opp.reader.readLine();
                         if(!msg.equals("")){
                             this.writer.println(msg);
@@ -102,11 +102,11 @@ public class Server{
         try {
             while(true){
                 p1=new PlayerServer(server.accept(), isWhite);
+                server.tpl.execute(p1);
                 p2=new PlayerServer(server.accept(), !isWhite);
+                server.tpl.execute(p2);
                 p1.setOpp(p2);
                 p2.setOpp(p1);
-                server.tpl.execute(p1);
-                server.tpl.execute(p2);
                 isWhite=Math.random()>=0.5;
             }
         } catch (Exception e) {
